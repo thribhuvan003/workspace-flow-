@@ -13,7 +13,6 @@ import {
   Palette,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { WorkspaceSidebar } from "@/components/layout/workspace-sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -46,7 +45,6 @@ export default function SettingsPage() {
   const { data: session } = useSession();
 
   const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
-  const [allWorkspaces, setAllWorkspaces] = useState<(Workspace & { role?: string })[]>([]);
   const [loadingWorkspace, setLoadingWorkspace] = useState(true);
 
   // Form state
@@ -69,10 +67,9 @@ export default function SettingsPage() {
   // Load workspace
   useEffect(() => {
     if (!slug) return;
-    fetch("/api/workspaces")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((all: (Workspace & { role?: string })[]) => {
-        const ws = all.find((w) => w.slug === slug) ?? null;
+    fetch(`/api/workspaces/slug/${slug}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((ws: (Workspace & { role?: string }) | null) => {
         if (ws) {
           setWorkspace(ws);
           setName(ws.name);
@@ -80,7 +77,6 @@ export default function SettingsPage() {
           setSelectedColor(ws.color);
           setCustomColor(ws.color);
         }
-        setAllWorkspaces(all);
       })
       .finally(() => setLoadingWorkspace(false));
   }, [slug]);
@@ -106,9 +102,6 @@ export default function SettingsPage() {
       if (res.ok) {
         const updated: Workspace = await res.json();
         setWorkspace((prev) => ({ ...prev!, ...updated }));
-        setAllWorkspaces((prev) =>
-          prev.map((w) => (w.id === updated.id ? { ...w, ...updated } : w))
-        );
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
       } else {
@@ -144,27 +137,9 @@ export default function SettingsPage() {
 
   const activeColor = selectedColor;
 
-  if (loadingWorkspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
-      </div>
-    );
-  }
-
-  if (!workspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <p className="text-white/40">Workspace not found</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen bg-[#0a0a0f] overflow-hidden">
-      <WorkspaceSidebar workspace={workspace} allWorkspaces={allWorkspaces} />
-
-      <div className="flex-1 overflow-hidden flex flex-col">
+    <>
+    <div className="flex-1 overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
@@ -409,6 +384,6 @@ export default function SettingsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

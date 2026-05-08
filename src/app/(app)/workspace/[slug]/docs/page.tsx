@@ -119,10 +119,10 @@ export default function DocsPage() {
   };
 
   const handleCreateDoc = async () => {
-    if (!workspace?.id || creatingDoc) return;
+    if (!workspaceId || creatingDoc) return;
     setCreatingDoc(true);
     try {
-      const res = await fetch(`/api/workspaces/${workspace.id}/docs`, {
+      const res = await fetch(`/api/workspaces/${workspaceId}/docs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: "Untitled Document", content: "" }),
@@ -137,27 +137,8 @@ export default function DocsPage() {
     }
   };
 
-  if (loadingWorkspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
-      </div>
-    );
-  }
-
-  if (!workspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <p className="text-white/40">Workspace not found</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen bg-[#0a0a0f] overflow-hidden">
-      <WorkspaceSidebar workspace={workspace} allWorkspaces={allWorkspaces} />
-
-      <div className="flex-1 flex overflow-hidden">
+    <div className="flex-1 flex overflow-hidden">
         {/* Doc list sidebar */}
         <div className="w-64 shrink-0 flex flex-col border-r border-[#1e1e2e] bg-[#0d0d14]">
           <div className="flex items-center justify-between px-4 pt-5 pb-3">
@@ -320,7 +301,6 @@ export default function DocsPage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

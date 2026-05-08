@@ -26,10 +26,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { WorkspaceSidebar } from "@/components/layout/workspace-sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import type { Workspace } from "@/types";
 
 // Raw API response shape
 interface ApiAnalytics {
@@ -159,31 +157,26 @@ const CustomTooltip = ({
 export default function AnalyticsPage() {
   const { slug } = useParams<{ slug: string }>();
 
-  const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
-  const [allWorkspaces, setAllWorkspaces] = useState<(Workspace & { role?: string })[]>([]);
-  const [analytics, setAnalytics] = useState<AnalyticsData & { createdLast30?: number } | null>(null);
+  const [workspaceId, setWorkspaceId] = useState<string>("");
   const [loadingWorkspace, setLoadingWorkspace] = useState(true);
+  const [analytics, setAnalytics] = useState<AnalyticsData & { createdLast30?: number } | null>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!slug) return;
-    fetch("/api/workspaces")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((all: (Workspace & { role?: string })[]) => {
-        const ws = all.find((w) => w.slug === slug) ?? null;
-        setWorkspace(ws);
-        setAllWorkspaces(all);
-      })
+    fetch(`/api/workspaces/slug/${slug}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((ws) => { if (ws) setWorkspaceId(ws.id); })
       .finally(() => setLoadingWorkspace(false));
   }, [slug]);
 
   const loadAnalytics = useCallback(async () => {
-    if (!workspace?.id) return;
+    if (!workspaceId) return;
     setLoadingAnalytics(true);
     setError(null);
     try {
-      const res = await fetch(`/api/workspaces/${workspace.id}/analytics`);
+      const res = await fetch(`/api/workspaces/${workspaceId}/analytics`);
       if (res.ok) {
         const raw: ApiAnalytics = await res.json();
         setAnalytics(transformAnalytics(raw));
@@ -195,33 +188,14 @@ export default function AnalyticsPage() {
     } finally {
       setLoadingAnalytics(false);
     }
-  }, [workspace?.id]);
+  }, [workspaceId]);
 
   useEffect(() => {
     loadAnalytics();
   }, [loadAnalytics]);
 
-  if (loadingWorkspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
-      </div>
-    );
-  }
-
-  if (!workspace) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#0a0a0f]">
-        <p className="text-white/40">Workspace not found</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen bg-[#0a0a0f] overflow-hidden">
-      <WorkspaceSidebar workspace={workspace} allWorkspaces={allWorkspaces} />
-
-      <div className="flex-1 overflow-hidden flex flex-col">
+    <div className="flex-1 overflow-hidden flex flex-col">
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
@@ -491,7 +465,6 @@ export default function AnalyticsPage() {
             ) : null}
           </div>
         </ScrollArea>
-      </div>
     </div>
   );
 }
