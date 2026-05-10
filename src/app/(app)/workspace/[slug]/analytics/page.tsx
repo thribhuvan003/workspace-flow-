@@ -10,7 +10,13 @@ import {
   Target,
   Loader2,
   Activity,
+  Brain,
+  Sparkles,
+  RefreshCw,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Button } from "@/components/ui/button";
 import {
   AreaChart,
   Area,
@@ -162,6 +168,9 @@ export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState<AnalyticsData & { createdLast30?: number } | null>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiType, setAiType] = useState<"workspace" | "standup" | "backlog">("workspace");
+  const [loadingAi, setLoadingAi] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -193,6 +202,26 @@ export default function AnalyticsPage() {
   useEffect(() => {
     loadAnalytics();
   }, [loadAnalytics]);
+
+  async function generateAiSummary() {
+    if (!workspaceId) return;
+    setLoadingAi(true);
+    setAiSummary(null);
+    try {
+      const res = await fetch(`/api/workspaces/${workspaceId}/ai`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: aiType }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      const { summary } = await res.json();
+      setAiSummary(summary);
+    } catch {
+      setAiSummary("Failed to generate summary. Please check your ANTHROPIC_API_KEY and try again.");
+    } finally {
+      setLoadingAi(false);
+    }
+  }
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
@@ -460,6 +489,65 @@ export default function AnalyticsPage() {
                       </div>
                     </div>
                   </div>
+                </div>
+
+
+                {/* AI Summary */}
+                <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.04] p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-indigo-600/20 flex items-center justify-center">
+                        <Brain className="w-4.5 h-4.5 text-indigo-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">AI Insights</h3>
+                        <p className="text-xs text-white/30">Powered by Claude</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex rounded-lg border border-white/10 overflow-hidden text-xs">
+                        {(["workspace", "standup", "backlog"] as const).map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => setAiType(t)}
+                            className={`px-3 py-1.5 capitalize transition-colors ${
+                              aiType === t
+                                ? "bg-indigo-600/30 text-indigo-300"
+                                : "text-white/30 hover:text-white/60 hover:bg-white/5"
+                            }`}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="gradient"
+                        onClick={generateAiSummary}
+                        loading={loadingAi}
+                        className="text-xs h-8"
+                      >
+                        {aiSummary ? (
+                          <><RefreshCw className="w-3.5 h-3.5 mr-1.5" />Regenerate</>
+                        ) : (
+                          <><Sparkles className="w-3.5 h-3.5 mr-1.5" />Generate</>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {aiSummary ? (
+                    <div className="prose prose-sm prose-invert max-w-none text-white/70 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white/90 [&_strong]:text-white [&_ul]:text-white/60 [&_li]:marker:text-indigo-400">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiSummary}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-white/20">
+                      <Brain className="w-8 h-8 mx-auto mb-3 text-indigo-500/30" />
+                      <p className="text-sm">Click &ldquo;Generate&rdquo; to get an AI-powered {aiType} summary</p>
+                      <p className="text-xs mt-1 text-white/15">Uses Claude to analyze your workspace data</p>
+                    </div>
+                  )}
                 </div>
               </>
             ) : null}

@@ -32,6 +32,7 @@ import {
   Activity,
   MessageSquare,
   Loader2,
+  Sparkles,
 } from "lucide-react";
 import { cn, getInitials, formatRelativeTime, formatDate, PRIORITY_CONFIG, STATUS_CONFIG, LABEL_COLORS, getLabelColor } from "@/lib/utils";
 import { useSocket } from "@/hooks/use-socket";
@@ -68,6 +69,7 @@ export function TaskDetailModal({
   const [activities, setActivities] = useState<ActivityType[]>([]);
   const [savingField, setSavingField] = useState<string | null>(null);
   const [labelMenuOpen, setLabelMenuOpen] = useState(false);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
 
   const titleInputRef = useRef<HTMLInputElement>(null);
   const commentsEndRef = useRef<HTMLDivElement>(null);
@@ -226,6 +228,25 @@ export function TaskDetailModal({
     }
   };
 
+  const generateAiDescription = async () => {
+    setGeneratingDesc(true);
+    try {
+      const res = await fetch(`/api/workspaces/${workspaceId}/ai/task`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: task.title, priority: task.priority, labels: task.labels }),
+      });
+      if (res.ok) {
+        const { description } = await res.json();
+        handleDescChange(description);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
+
   const handleSubmitComment = async () => {
     if (!commentInput.trim() || submittingComment) return;
     setSubmittingComment(true);
@@ -340,18 +361,31 @@ export function TaskDetailModal({
                     <label className="text-xs font-medium text-white/40 uppercase tracking-wider">
                       Description
                     </label>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={() => setDescPreview(!descPreview)}
-                      title={descPreview ? "Edit" : "Preview"}
-                    >
-                      {descPreview ? (
-                        <Edit3 className="w-3.5 h-3.5" />
-                      ) : (
-                        <Eye className="w-3.5 h-3.5" />
-                      )}
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={generateAiDescription}
+                        loading={generatingDesc}
+                        className="h-6 px-2 text-[10px] text-indigo-400/70 hover:text-indigo-400 hover:bg-indigo-500/10"
+                        title="Generate description with AI"
+                      >
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        AI
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => setDescPreview(!descPreview)}
+                        title={descPreview ? "Edit" : "Preview"}
+                      >
+                        {descPreview ? (
+                          <Edit3 className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
 
                   {descPreview ? (

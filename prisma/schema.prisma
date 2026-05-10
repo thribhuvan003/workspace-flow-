@@ -79,6 +79,9 @@ model Workspace {
   invites      WorkspaceInvite[]
   subscription Subscription?
   activities   Activity[]
+  integrations Integration[]
+  automations  AutomationRule[]
+  aiSummaries  AiSummary[]
 }
 
 enum MemberRole {
@@ -199,4 +202,50 @@ model Activity {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   task      Task?     @relation(fields: [taskId], references: [id], onDelete: SetNull)
+}
+
+enum IntegrationType {
+  SLACK
+  GITHUB
+  DISCORD
+}
+
+model Integration {
+  id            String          @id @default(cuid())
+  workspaceId   String
+  type          IntegrationType
+  enabled       Boolean         @default(true)
+  accessToken   String?
+  refreshToken  String?
+  metadata      Json?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, type])
+}
+
+model AutomationRule {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  trigger     String
+  action      String
+  config      Json
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model AiSummary {
+  id          String   @id @default(cuid())
+  workspaceId String
+  type        String
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }

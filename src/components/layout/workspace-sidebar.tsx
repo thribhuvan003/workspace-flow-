@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
   LayoutGrid, FileText, Users, BarChart3, Settings, LogOut,
-  ChevronDown, Plus, Activity, CreditCard, Home, Zap,
+  ChevronDown, Plus, CreditCard, Home, Zap, Plug, Search,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const navItems = [
   { href: "/docs", label: "Docs", icon: FileText },
   { href: "/members", label: "Members", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/integrations", label: "Integrations", icon: Plug },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -83,6 +84,21 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+
+      {/* Search / Command palette trigger */}
+      <div className="px-3 pt-2 pb-1">
+        <button
+          onClick={() => {
+            const event = new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true });
+            window.dispatchEvent(event);
+          }}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.07] border border-white/5 text-white/30 hover:text-white/50 transition-all text-sm group"
+        >
+          <Search className="w-3.5 h-3.5 shrink-0" />
+          <span className="flex-1 text-left text-xs">Search...</span>
+          <kbd className="text-[10px] font-mono bg-white/5 border border-white/10 rounded px-1.5 py-0.5 group-hover:bg-white/10 transition-colors">⌘K</kbd>
+        </button>
       </div>
 
       {/* Nav */}

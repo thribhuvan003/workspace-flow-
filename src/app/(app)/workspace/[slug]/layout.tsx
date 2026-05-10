@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { WorkspaceSidebar } from "@/components/layout/workspace-sidebar";
+import { CommandPalette } from "@/components/command-palette";
 
 interface Props {
   children: React.ReactNode;
@@ -59,6 +60,7 @@ export default async function WorkspaceLayout({ children, params }: Props) {
     <div className="flex h-screen overflow-hidden bg-[#0a0a0f]">
       <WorkspaceSidebar workspace={workspaceWithRole} allWorkspaces={allWorkspaces} />
       <main className="flex-1 overflow-auto">{children}</main>
+      <CommandPalette workspaceSlug={slug} workspaceName={workspace.name} />
     </div>
   );
 }
