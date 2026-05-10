@@ -19,13 +19,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { type = "workspace" } = await req.json().catch(() => ({}));
 
-  const [tasks, docs, members, recentActivity] = await Promise.all([
-    prisma.task.findMany({
-      where: { workspaceId: id },
-      include: { assignee: { select: { name: true } } },
-      orderBy: { updatedAt: "desc" },
-      take: 50,
-    }),
+  const tasks = await prisma.task.findMany({
+    where: { workspaceId: id },
+    include: { assignee: { select: { name: true } } },
+    orderBy: { updatedAt: "desc" },
+    take: 50,
+  });
+
+  const [docs, members, recentActivity] = await Promise.all([
     prisma.doc.findMany({
       where: { workspaceId: id },
       select: { title: true, content: true, updatedAt: true },
