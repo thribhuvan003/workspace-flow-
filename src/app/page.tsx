@@ -7,8 +7,8 @@ import { ArrowRight, LayoutGrid, Users, BarChart3, FileText, Zap, Plug, Check } 
 
 // ─── Spring configs ────────────────────────────────────────────────────────────
 
-const SPRING = { type: "spring", stiffness: 280, damping: 28 };
-const SPRING_SLOW = { type: "spring", stiffness: 120, damping: 20 };
+const SPRING = { type: "spring" as const, stiffness: 280, damping: 28 };
+const SPRING_SLOW = { type: "spring" as const, stiffness: 120, damping: 20 };
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
 
@@ -99,7 +99,7 @@ function Navbar() {
     >
       <motion.div
         className="max-w-6xl mx-auto mt-4 rounded-2xl flex items-center justify-between h-14 px-5"
-        style={{ background: bg, borderColor: `rgba(255,255,255,${borderOpacity})`, borderWidth: "1px", borderStyle: "solid" } as React.CSSProperties}
+        style={{ background: bg as any, borderColor: borderOpacity as any, borderWidth: "1px", borderStyle: "solid" } as React.CSSProperties}
       >
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SPRING, delay: 0.1 }}>
           <Link href="/" className="flex items-center gap-2.5">
@@ -186,7 +186,7 @@ function KanbanPreview() {
       <div className="flex items-center gap-1.5 px-4 h-9" style={{ background: "#0c0c15", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         {["#ef4444", "#f59e0b", "#22c55e"].map((c, i) => (
           <motion.span key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: 0.65 }}
-            initial={{ scale: 0 }} animate={inView ? { scale: 1 } : {}} transition={{ delay: 0.3 + i * 0.06, type: "spring", stiffness: 400 }} />
+            initial={{ scale: 0 }} animate={inView ? { scale: 1 } : {}} transition={{ delay: 0.3 + i * 0.06, type: "spring" as const, stiffness: 400 }} />
         ))}
         <div className="ml-3 flex items-center px-2 h-5 rounded-md" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", minWidth: 160 }}>
           <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.22)" }}>app.workspaceflow.io/board</span>

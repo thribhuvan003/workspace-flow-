@@ -27,8 +27,8 @@ import { cn } from "@/lib/utils";
 import type { Workspace } from "@/types";
 
 const WORKSPACE_COLORS = [
-  { value: "#6366f1", label: "Indigo" },
-  { value: "#8b5cf6", label: "Violet" },
+  { value: "#2dd4bf", label: "Indigo" },
+  { value: "#2dd4bf", label: "Violet" },
   { value: "#ec4899", label: "Pink" },
   { value: "#f59e0b", label: "Amber" },
   { value: "#10b981", label: "Emerald" },
@@ -36,7 +36,7 @@ const WORKSPACE_COLORS = [
   { value: "#ef4444", label: "Red" },
   { value: "#14b8a6", label: "Teal" },
   { value: "#f97316", label: "Orange" },
-  { value: "#a855f7", label: "Purple" },
+  { value: "#2dd4bf", label: "Purple" },
 ];
 
 export default function SettingsPage() {
@@ -50,8 +50,8 @@ export default function SettingsPage() {
   // Form state
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#6366f1");
-  const [customColor, setCustomColor] = useState("#6366f1");
+  const [selectedColor, setSelectedColor] = useState("#2dd4bf");
+  const [customColor, setCustomColor] = useState("#2dd4bf");
 
   // Save state
   const [saving, setSaving] = useState(false);
@@ -143,8 +143,8 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/15 flex items-center justify-center">
-              <Settings className="w-5 h-5 text-indigo-400" />
+            <div className="w-10 h-10 rounded-xl bg-[#0d9488]/15 flex items-center justify-center">
+              <Settings className="w-5 h-5 text-[#2dd4bf]" />
             </div>
             <div>
               <h1 className="text-xl font-semibold text-white">Settings</h1>
@@ -190,7 +190,7 @@ export default function SettingsPage() {
                       disabled={!isOwner}
                       className={cn(
                         "w-full h-9 px-3 rounded-lg border border-[#2a2a3e] bg-[#0d0d14] text-sm text-white placeholder:text-white/25",
-                        "focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all",
+                        "focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/50 focus:border-[#2dd4bf]/50 transition-all",
                         !isOwner && "opacity-50 cursor-not-allowed"
                       )}
                     />
@@ -209,7 +209,7 @@ export default function SettingsPage() {
                       disabled={!isOwner}
                       className={cn(
                         "w-full px-3 py-2.5 rounded-lg border border-[#2a2a3e] bg-[#0d0d14] text-sm text-white placeholder:text-white/25 resize-none",
-                        "focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all",
+                        "focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/50 focus:border-[#2dd4bf]/50 transition-all",
                         !isOwner && "opacity-50 cursor-not-allowed"
                       )}
                     />

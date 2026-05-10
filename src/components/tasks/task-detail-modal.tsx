@@ -297,12 +297,12 @@ export function TaskDetailModal({
                       setTitleEditing(false);
                     }
                   }}
-                  className="w-full bg-transparent text-xl font-semibold text-white outline-none border-b border-indigo-500/50 pb-1 focus:border-indigo-400"
+                  className="w-full bg-transparent text-xl font-semibold text-white outline-none border-b border-[#2dd4bf]/50 pb-1 focus:border-[#2dd4bf]"
                   autoFocus
                 />
               ) : (
                 <h2
-                  className="text-xl font-semibold text-white cursor-pointer hover:text-indigo-300 transition-colors pr-8 leading-snug"
+                  className="text-xl font-semibold text-white cursor-pointer hover:text-[#5eead4] transition-colors pr-8 leading-snug"
                   onClick={() => setTitleEditing(true)}
                   title="Click to edit title"
                 >
@@ -367,7 +367,7 @@ export function TaskDetailModal({
                         size="sm"
                         onClick={generateAiDescription}
                         loading={generatingDesc}
-                        className="h-6 px-2 text-[10px] text-indigo-400/70 hover:text-indigo-400 hover:bg-indigo-500/10"
+                        className="h-6 px-2 text-[10px] text-[#2dd4bf]/70 hover:text-[#2dd4bf] hover:bg-[#2dd4bf]/10"
                         title="Generate description with AI"
                       >
                         <Sparkles className="w-3 h-3 mr-1" />
@@ -406,7 +406,7 @@ export function TaskDetailModal({
                       value={descValue}
                       onChange={(e) => handleDescChange(e.target.value)}
                       placeholder="Add a description… (supports markdown)"
-                      className="min-h-[120px] resize-none bg-[#0d0d14] border-[#2a2a3e] text-white/80 placeholder:text-white/25 focus:border-indigo-500/40"
+                      className="min-h-[120px] resize-none bg-[#0d0d14] border-[#2a2a3e] text-white/80 placeholder:text-white/25 focus:border-[#2dd4bf]/40"
                     />
                   )}
                 </div>
@@ -479,7 +479,7 @@ export function TaskDetailModal({
                         }
                       }}
                       placeholder="Write a comment… (⌘Enter to submit)"
-                      className="flex-1 min-h-[72px] resize-none bg-[#0d0d14] border-[#2a2a3e] text-white/80 placeholder:text-white/25 focus:border-indigo-500/40"
+                      className="flex-1 min-h-[72px] resize-none bg-[#0d0d14] border-[#2a2a3e] text-white/80 placeholder:text-white/25 focus:border-[#2dd4bf]/40"
                     />
                     <Button
                       onClick={handleSubmitComment}
@@ -564,7 +564,7 @@ export function TaskDetailModal({
                     onChange={(e) => handleDueDateChange(e.target.value)}
                     className={cn(
                       "w-full h-9 px-3 rounded-lg border border-[#2a2a3e] bg-[#111118] text-sm text-white/80",
-                      "focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50",
+                      "focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/50 focus:border-[#2dd4bf]/50",
                       "[color-scheme:dark]"
                     )}
                   />

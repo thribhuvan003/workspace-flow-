@@ -177,8 +177,8 @@ export default function MembersPage() {
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/15 flex items-center justify-center">
-              <Users className="w-5 h-5 text-indigo-400" />
+            <div className="w-10 h-10 rounded-xl bg-[#0d9488]/15 flex items-center justify-center">
+              <Users className="w-5 h-5 text-[#2dd4bf]" />
             </div>
             <div>
               <h1 className="text-xl font-semibold text-white">Members</h1>
@@ -199,7 +199,7 @@ export default function MembersPage() {
               <div className="rounded-2xl border border-[#1e1e2e] overflow-hidden">
                 {loadingMembers ? (
                   <div className="flex justify-center py-12">
-                    <Loader2 className="w-5 h-5 animate-spin text-indigo-400/60" />
+                    <Loader2 className="w-5 h-5 animate-spin text-[#2dd4bf]/60" />
                   </div>
                 ) : members.length === 0 ? (
                   <div className="text-center py-12 text-white/30">No members found</div>
@@ -227,7 +227,7 @@ export default function MembersPage() {
                                 {member.user.name ?? member.user.email}
                               </p>
                               {isSelf && (
-                                <span className="text-[10px] text-indigo-400/70 bg-indigo-500/10 px-1.5 py-0.5 rounded-full">
+                                <span className="text-[10px] text-[#2dd4bf]/70 bg-[#2dd4bf]/10 px-1.5 py-0.5 rounded-full">
                                   You
                                 </span>
                               )}
@@ -311,7 +311,7 @@ export default function MembersPage() {
                         required
                         className={cn(
                           "w-full h-9 pl-9 pr-3 rounded-lg border bg-[#111118] text-sm text-white placeholder:text-white/25",
-                          "focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all",
+                          "focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/50 focus:border-[#2dd4bf]/50 transition-all",
                           inviteError ? "border-red-500/50" : "border-[#2a2a3e]"
                         )}
                       />

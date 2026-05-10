@@ -205,7 +205,7 @@ function LoginForm() {
             <Label htmlFor="password">Password</Label>
             <Link
               href="/forgot-password"
-              className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="text-xs text-[#2dd4bf] hover:text-[#5eead4] transition-colors"
             >
               Forgot password?
             </Link>
@@ -255,7 +255,7 @@ function LoginForm() {
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="text-indigo-400 font-medium hover:text-indigo-300 transition-colors"
+          className="text-[#2dd4bf] font-medium hover:text-[#5eead4] transition-colors"
         >
           Create one for free
         </Link>

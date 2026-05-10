@@ -252,14 +252,14 @@ export function CommandPalette({ workspaceSlug, workspaceName }: CommandPaletteP
                       onMouseEnter={() => setSelected(idx)}
                       className={cn(
                         "w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors",
-                        isSelected ? "bg-indigo-600/15" : "hover:bg-white/[0.04]"
+                        isSelected ? "bg-[#0d9488]/15" : "hover:bg-white/[0.04]"
                       )}
                     >
                       <div className={cn(
                         "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors",
-                        isSelected ? "bg-indigo-600/20" : "bg-white/5"
+                        isSelected ? "bg-[#0d9488]/20" : "bg-white/5"
                       )}>
-                        <Icon className={cn("w-3.5 h-3.5", isSelected ? "text-indigo-400" : "text-white/40")} />
+                        <Icon className={cn("w-3.5 h-3.5", isSelected ? "text-[#2dd4bf]" : "text-white/40")} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className={cn("text-sm font-medium truncate", isSelected ? "text-white" : "text-white/70")}>
@@ -269,7 +269,7 @@ export function CommandPalette({ workspaceSlug, workspaceName }: CommandPaletteP
                           <p className="text-xs text-white/30 truncate">{cmd.description}</p>
                         )}
                       </div>
-                      {isSelected && <ArrowRight className="w-3.5 h-3.5 text-indigo-400 shrink-0" />}
+                      {isSelected && <ArrowRight className="w-3.5 h-3.5 text-[#2dd4bf] shrink-0" />}
                     </button>
                   );
                 })}
