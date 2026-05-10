@@ -5,7 +5,7 @@ import { Home, Zap } from "lucide-react";
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center p-4 text-center">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2dd4bf] to-[#0d9488] flex items-center justify-center mb-6">
+      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#ff5c00] to-[#cc3d00] flex items-center justify-center mb-6">
         <Zap className="w-7 h-7 text-white" />
       </div>
       <h1 className="text-8xl font-black text-white/10 mb-2">404</h1>

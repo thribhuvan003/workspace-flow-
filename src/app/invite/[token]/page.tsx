@@ -57,7 +57,7 @@ export default function InvitePage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2dd4bf] to-[#0d9488] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#cc3d00] flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg font-bold text-white">WorkspaceFlow</span>
@@ -66,7 +66,7 @@ export default function InvitePage() {
         <div className="bg-[#111118] border border-[#2a2a3e] rounded-2xl p-8">
           {inviteStatus === "loading" && (
             <div className="flex flex-col items-center gap-4 py-8">
-              <Loader2 className="w-8 h-8 text-[#2dd4bf] animate-spin" />
+              <Loader2 className="w-8 h-8 text-[#ff5c00] animate-spin" />
               <p className="text-white/60">Loading invite...</p>
             </div>
           )}
@@ -97,7 +97,7 @@ export default function InvitePage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-white">
-                    Join <span className="text-[#2dd4bf]">{invite.workspace.name}</span>
+                    Join <span className="text-[#ff5c00]">{invite.workspace.name}</span>
                   </h2>
                   <p className="text-sm text-white/50 mt-1">
                     You&apos;ve been invited as a{" "}

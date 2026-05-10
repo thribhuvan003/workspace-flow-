@@ -95,7 +95,7 @@ function WorkspaceCard({ workspace }: { workspace: Workspace & { role?: string }
               <Lock className="w-2.5 h-2.5" /> Free
             </span>
           ) : (
-            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#2dd4bf]/10 text-[#2dd4bf] border border-[#2dd4bf]/20">
+            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#ff5c00]/10 text-[#ff5c00] border border-[#ff5c00]/20">
               <Sparkles className="w-2.5 h-2.5" /> Pro
             </span>
           )}
@@ -133,7 +133,7 @@ function WorkspaceCard({ workspace }: { workspace: Workspace & { role?: string }
             {workspace.members?.slice(0, 4).map((member) => (
               <Avatar key={member.id} className="h-6 w-6 border-2 border-[#111118]">
                 <AvatarImage src={member.user.image ?? ""} />
-                <AvatarFallback className="text-[10px] bg-[#0d9488]/20 text-[#2dd4bf]">
+                <AvatarFallback className="text-[10px] bg-[#cc3d00]/20 text-[#ff5c00]">
                   {getInitials(member.user.name ?? member.user.email)}
                 </AvatarFallback>
               </Avatar>
@@ -150,7 +150,7 @@ function WorkspaceCard({ workspace }: { workspace: Workspace & { role?: string }
               e.stopPropagation();
               router.push(`/workspace/${workspace.slug}`);
             }}
-            className="flex items-center gap-1.5 text-xs font-medium text-[#2dd4bf] hover:text-[#5eead4] transition-colors group/btn"
+            className="flex items-center gap-1.5 text-xs font-medium text-[#ff5c00] hover:text-[#ff8a40] transition-colors group/btn"
           >
             Open
             <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
@@ -167,10 +167,10 @@ function NewWorkspaceCard({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="group relative rounded-2xl border-2 border-dashed border-[#1e1e2e] bg-transparent overflow-hidden cursor-pointer transition-all duration-200 hover:border-[#2dd4bf]/40 hover:bg-[#2dd4bf]/5 min-h-[200px] flex flex-col items-center justify-center gap-3 p-6"
+      className="group relative rounded-2xl border-2 border-dashed border-[#1e1e2e] bg-transparent overflow-hidden cursor-pointer transition-all duration-200 hover:border-[#ff5c00]/40 hover:bg-[#ff5c00]/5 min-h-[200px] flex flex-col items-center justify-center gap-3 p-6"
     >
-      <div className="w-12 h-12 rounded-2xl border-2 border-dashed border-[#2a2a3e] group-hover:border-[#2dd4bf]/50 flex items-center justify-center transition-colors">
-        <Plus className="w-5 h-5 text-white/30 group-hover:text-[#2dd4bf] transition-colors" />
+      <div className="w-12 h-12 rounded-2xl border-2 border-dashed border-[#2a2a3e] group-hover:border-[#ff5c00]/50 flex items-center justify-center transition-colors">
+        <Plus className="w-5 h-5 text-white/30 group-hover:text-[#ff5c00] transition-colors" />
       </div>
       <div className="text-center">
         <p className="text-sm font-medium text-white/50 group-hover:text-white/80 transition-colors">
@@ -190,10 +190,10 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-[#0d9488]/10 border border-[#2dd4bf]/20 flex items-center justify-center">
-          <LayoutGrid className="w-9 h-9 text-[#2dd4bf]" />
+        <div className="w-20 h-20 rounded-3xl bg-[#cc3d00]/10 border border-[#ff5c00]/20 flex items-center justify-center">
+          <LayoutGrid className="w-9 h-9 text-[#ff5c00]" />
         </div>
-        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[#0d9488] flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[#cc3d00] flex items-center justify-center">
           <Plus className="w-3.5 h-3.5 text-white" />
         </div>
       </div>
@@ -347,7 +347,7 @@ function CreateWorkspaceModal({ open, onOpenChange, onCreated }: CreateWorkspace
                 placeholder="What is this workspace for?"
                 maxLength={300}
                 rows={2}
-                className="w-full rounded-lg border border-[#2a2a3e] bg-[#111118] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/50 focus:border-[#2dd4bf]/50 resize-none transition-all"
+                className="w-full rounded-lg border border-[#2a2a3e] bg-[#111118] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#ff5c00]/50 focus:border-[#ff5c00]/50 resize-none transition-all"
               />
             </div>
 
@@ -388,7 +388,7 @@ function CreateWorkspaceModal({ open, onOpenChange, onCreated }: CreateWorkspace
                   className={cn(
                     "w-9 h-9 rounded-lg border text-xs font-medium transition-all",
                     selectedEmoji === null
-                      ? "bg-[#0d9488]/20 border-[#2dd4bf]/40 text-[#2dd4bf]"
+                      ? "bg-[#cc3d00]/20 border-[#ff5c00]/40 text-[#ff5c00]"
                       : "border-[#2a2a3e] text-white/30 hover:border-[#3a3a52] hover:text-white/50"
                   )}
                 >
@@ -402,7 +402,7 @@ function CreateWorkspaceModal({ open, onOpenChange, onCreated }: CreateWorkspace
                     className={cn(
                       "w-9 h-9 rounded-lg border text-lg transition-all",
                       selectedEmoji === emoji
-                        ? "bg-[#0d9488]/20 border-[#2dd4bf]/40 scale-110"
+                        ? "bg-[#cc3d00]/20 border-[#ff5c00]/40 scale-110"
                         : "border-[#2a2a3e] hover:border-[#3a3a52] hover:bg-[#1a1a26]"
                     )}
                   >
@@ -521,7 +521,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2dd4bf] to-[#0d9488] flex items-center justify-center shadow-lg shadow-[#2dd4bf]/30">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#cc3d00] flex items-center justify-center shadow-lg shadow-[#ff5c00]/30">
               <LayoutGrid className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-white text-base tracking-tight">

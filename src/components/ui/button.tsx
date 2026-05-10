@@ -6,12 +6,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2dd4bf] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5c00] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none",
   {
     variants: {
       variant: {
         default:
-          "bg-[#0d9488] text-white hover:bg-[#2dd4bf] shadow-lg shadow-[#2dd4bf]/20 active:scale-[0.98]",
+          "bg-[#cc3d00] text-white hover:bg-[#ff5c00] shadow-lg shadow-[#ff5c00]/20 active:scale-[0.98]",
         destructive:
           "bg-red-600/90 text-white hover:bg-red-500 shadow-lg shadow-red-500/20",
         outline:
@@ -21,9 +21,9 @@ const buttonVariants = cva(
         ghost:
           "text-white/60 hover:bg-[#1a1a26] hover:text-white",
         link:
-          "text-[#2dd4bf] underline-offset-4 hover:underline hover:text-[#5eead4] p-0 h-auto",
+          "text-[#ff5c00] underline-offset-4 hover:underline hover:text-[#ff8a40] p-0 h-auto",
         gradient:
-          "bg-gradient-to-r from-[#0d9488] to-[#0d9488] text-white hover:from-[#2dd4bf] hover:to-[#2dd4bf] shadow-lg shadow-[#2dd4bf]/25 active:scale-[0.98]",
+          "bg-gradient-to-r from-[#cc3d00] to-[#cc3d00] text-white hover:from-[#ff5c00] hover:to-[#ff5c00] shadow-lg shadow-[#ff5c00]/25 active:scale-[0.98]",
         success:
           "bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-500/20",
       },

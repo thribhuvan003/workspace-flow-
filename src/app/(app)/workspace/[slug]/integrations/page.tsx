@@ -222,7 +222,7 @@ function IntegrationCard({
         <div className="grid grid-cols-2 gap-1.5">
           {config.features.map((f) => (
             <div key={f} className="flex items-center gap-2 text-xs text-white/40">
-              <div className="w-1 h-1 rounded-full bg-[#2dd4bf]/60 shrink-0" />
+              <div className="w-1 h-1 rounded-full bg-[#ff5c00]/60 shrink-0" />
               {f}
             </div>
           ))}
@@ -291,7 +291,7 @@ function IntegrationCard({
                 href={config.docsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#2dd4bf] hover:text-[#5eead4] inline-flex items-center gap-1"
+                className="text-[#ff5c00] hover:text-[#ff8a40] inline-flex items-center gap-1"
               >
                 View docs <ExternalLink className="w-3 h-3" />
               </a>
@@ -394,7 +394,7 @@ export default function IntegrationsPage() {
         <div className="grid grid-cols-3 gap-4">
           {[
             { label: "Connected", value: integrations.filter((i) => !!i).length, color: "text-emerald-400" },
-            { label: "Active", value: integrations.filter((i) => i.enabled).length, color: "text-[#2dd4bf]" },
+            { label: "Active", value: integrations.filter((i) => i.enabled).length, color: "text-[#ff5c00]" },
             { label: "Available", value: INTEGRATIONS.length, color: "text-white/60" },
           ].map(({ label, value, color }) => (
             <div key={label} className="bg-white/[0.03] border border-white/5 rounded-xl p-4 text-center">

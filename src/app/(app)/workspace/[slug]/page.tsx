@@ -39,7 +39,7 @@ const COLUMNS: {
   lightColor: string;
 }[] = [
   { id: "TODO",        label: "To Do",       color: "#5a5a7a", lightColor: "rgba(90,90,122,0.07)"   },
-  { id: "IN_PROGRESS", label: "In Progress", color: "#2dd4bf", lightColor: "rgba(45,212,191,0.08)"  },
+  { id: "IN_PROGRESS", label: "In Progress", color: "#ff5c00", lightColor: "rgba(255,92,0,0.08)"  },
   { id: "REVIEW",      label: "Review",      color: "#f59e0b", lightColor: "rgba(245,158,11,0.10)"  },
   { id: "DONE",        label: "Done",        color: "#22c55e", lightColor: "rgba(34,197,94,0.07)"   },
 ];
@@ -121,7 +121,7 @@ function TaskCard({ task, index, onClick }: TaskCardProps) {
             "kanban-card group relative rounded-xl border bg-[#111118] p-3.5 cursor-pointer select-none",
             "transition-all duration-150",
             snapshot.isDragging
-              ? "border-[#2dd4bf]/50 shadow-2xl shadow-[#2dd4bf]/15 rotate-1 scale-[1.02] bg-[#15151f] z-50"
+              ? "border-[#ff5c00]/50 shadow-2xl shadow-[#ff5c00]/15 rotate-1 scale-[1.02] bg-[#15151f] z-50"
               : "border-[#1e1e2e] hover:border-[#2a2a3e] hover:shadow-lg hover:shadow-black/30"
           )}
           style={provided.draggableProps.style}
@@ -256,7 +256,7 @@ function QuickAddForm({
   };
 
   return (
-    <div className="rounded-xl border border-[#2dd4bf]/30 bg-[#0f0f1c] p-2.5 shadow-lg shadow-[#2dd4bf]/08">
+    <div className="rounded-xl border border-[#ff5c00]/30 bg-[#0f0f1c] p-2.5 shadow-lg shadow-[#ff5c00]/08">
       <input
         ref={inputRef}
         value={title}
@@ -364,7 +364,7 @@ function KanbanCol({
             className={cn(
               "flex flex-col gap-2.5 rounded-xl min-h-[100px] p-1.5 flex-1 transition-all duration-150",
               snapshot.isDraggingOver
-                ? "bg-[#2dd4bf]/5 outline outline-1 outline-dashed outline-[#2dd4bf]/25"
+                ? "bg-[#ff5c00]/5 outline outline-1 outline-dashed outline-[#ff5c00]/25"
                 : "bg-transparent"
             )}
           >
@@ -405,7 +405,7 @@ function KanbanCol({
             onClick={() => setShowQuickAdd(true)}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-white/30 hover:text-white/60 hover:bg-[#1a1a26] transition-all group"
           >
-            <Plus className="w-3.5 h-3.5 group-hover:text-[#2dd4bf] transition-colors" />
+            <Plus className="w-3.5 h-3.5 group-hover:text-[#ff5c00] transition-colors" />
             Add task
           </button>
         )}

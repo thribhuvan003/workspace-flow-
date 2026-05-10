@@ -47,8 +47,8 @@ export function formatRelativeTime(date: Date | string): string {
 }
 
 export const WORKSPACE_COLORS = [
-  "#2dd4bf",
-  "#2dd4bf",
+  "#ff5c00",
+  "#ff5c00",
   "#ec4899",
   "#f59e0b",
   "#10b981",
@@ -66,19 +66,19 @@ export const PRIORITY_CONFIG = {
 
 export const STATUS_CONFIG = {
   TODO: { label: "To Do", color: "#6b7280" },
-  IN_PROGRESS: { label: "In Progress", color: "#2dd4bf" },
+  IN_PROGRESS: { label: "In Progress", color: "#ff5c00" },
   REVIEW: { label: "Review", color: "#f59e0b" },
   DONE: { label: "Done", color: "#10b981" },
 } as const;
 
 export const LABEL_COLORS = [
   { name: "Bug", color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
-  { name: "Feature", color: "#2dd4bf", bg: "rgba(45,212,191,0.15)" },
+  { name: "Feature", color: "#ff5c00", bg: "rgba(255,92,0,0.15)" },
   { name: "Design", color: "#ec4899", bg: "rgba(236,72,153,0.15)" },
   { name: "Backend", color: "#f59e0b", bg: "rgba(245,158,11,0.15)" },
   { name: "Frontend", color: "#3b82f6", bg: "rgba(59,130,246,0.15)" },
   { name: "Docs", color: "#10b981", bg: "rgba(16,185,129,0.15)" },
-  { name: "Testing", color: "#2dd4bf", bg: "rgba(139,92,246,0.15)" },
+  { name: "Testing", color: "#ff5c00", bg: "rgba(139,92,246,0.15)" },
   { name: "Urgent", color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
 ];
 

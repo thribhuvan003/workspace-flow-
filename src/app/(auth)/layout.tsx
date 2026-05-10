@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 function Logo() {
   return (
     <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-      <rect x="2" y="2" width="10" height="10" rx="2" fill="#2dd4bf" />
-      <rect x="16" y="2" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.5" />
-      <rect x="2" y="16" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.5" />
-      <rect x="16" y="16" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.25" />
+      <rect x="2" y="2" width="10" height="10" rx="2" fill="#ff5c00" />
+      <rect x="16" y="2" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.5" />
+      <rect x="2" y="16" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.5" />
+      <rect x="16" y="16" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.25" />
     </svg>
   );
 }
@@ -30,7 +30,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           className="absolute pointer-events-none"
           style={{
             top: "-5%", left: "-10%", width: "500px", height: "500px",
-            background: "radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 65%)",
+            background: "radial-gradient(circle, rgba(255,92,0,0.08) 0%, transparent 65%)",
             filter: "blur(40px)",
           }}
         />
@@ -38,15 +38,15 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           className="absolute pointer-events-none"
           style={{
             bottom: "10%", right: "5%", width: "350px", height: "350px",
-            background: "radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 65%)",
+            background: "radial-gradient(circle, rgba(255,92,0,0.05) 0%, transparent 65%)",
             filter: "blur(50px)",
           }}
         />
 
-        {/* Thin teal top-border accent */}
+        {/* Thin orange top-border accent */}
         <div
           className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(90deg, transparent, rgba(45,212,191,0.4), transparent)" }}
+          style={{ background: "linear-gradient(90deg, transparent, rgba(255,92,0,0.4), transparent)" }}
         />
 
         <div className="relative z-10 flex flex-col h-full p-12 xl:p-16">
@@ -64,15 +64,15 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <span
                 className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full"
                 style={{
-                  color: "#2dd4bf",
-                  background: "rgba(45,212,191,0.08)",
-                  border: "1px solid rgba(45,212,191,0.2)",
+                  color: "#ff5c00",
+                  background: "rgba(255,92,0,0.08)",
+                  border: "1px solid rgba(255,92,0,0.2)",
                   letterSpacing: "0.06em",
                 }}
               >
                 <span
                   className="w-1.5 h-1.5 rounded-full"
-                  style={{ background: "#2dd4bf", boxShadow: "0 0 6px rgba(45,212,191,0.8)" }}
+                  style={{ background: "#ff5c00", boxShadow: "0 0 6px rgba(255,92,0,0.8)" }}
                 />
                 TRUSTED BY 2,400+ TEAMS
               </span>
@@ -86,7 +86,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <br />
               One workspace.
               <br />
-              <span style={{ color: "#2dd4bf" }}>No chaos.</span>
+              <span style={{ color: "#ff5c00" }}>No chaos.</span>
             </h1>
 
             <p className="text-base leading-relaxed mb-10 max-w-sm" style={{ color: "rgba(240,240,248,0.48)" }}>
@@ -103,10 +103,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <div key={feat} className="flex items-center gap-3">
                   <div
                     className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
-                    style={{ background: "rgba(45,212,191,0.1)", border: "1px solid rgba(45,212,191,0.2)" }}
+                    style={{ background: "rgba(255,92,0,0.1)", border: "1px solid rgba(255,92,0,0.2)" }}
                   >
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4l2.5 2.5L9 1" stroke="#2dd4bf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M1 4l2.5 2.5L9 1" stroke="#ff5c00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <span className="text-sm" style={{ color: "rgba(240,240,248,0.55)" }}>{feat}</span>
@@ -122,11 +122,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           >
             <div className="flex items-start gap-3">
               <div className="flex -space-x-2 flex-shrink-0 mt-0.5">
-                {([ ["#2dd4bf","S"], ["#60a5fa","M"], ["#a78bfa","A"] ] as [string,string][]).map(([c,l],i) => (
+                {([ ["#ff5c00","S"], ["#60a5fa","M"], ["#a78bfa","A"] ] as [string,string][]).map(([c,l],i) => (
                   <div
                     key={i}
                     className="w-7 h-7 rounded-full border-2 flex items-center justify-center text-[10px] font-bold text-white"
-                    style={{ background: c, borderColor: "#060609", zIndex: 3 - i }}
+                    style={{ background: c, borderColor: "#0f0d0b", zIndex: 3 - i }}
                   >
                     {l}
                   </div>
@@ -150,7 +150,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div
           className="absolute bottom-0 right-0 w-72 h-72 rounded-full pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(45,212,191,0.04) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(255,92,0,0.04) 0%, transparent 70%)",
             filter: "blur(40px)",
           }}
         />

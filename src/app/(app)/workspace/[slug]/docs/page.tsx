@@ -161,7 +161,7 @@ export default function DocsPage() {
           <ScrollArea className="flex-1">
             {loadingDocs ? (
               <div className="flex justify-center py-10">
-                <Loader2 className="w-5 h-5 animate-spin text-[#2dd4bf]/60" />
+                <Loader2 className="w-5 h-5 animate-spin text-[#ff5c00]/60" />
               </div>
             ) : docs.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center gap-3">
@@ -183,13 +183,13 @@ export default function DocsPage() {
                     className={cn(
                       "w-full text-left px-3 py-2.5 rounded-xl transition-all",
                       selectedDoc?.id === doc.id
-                        ? "bg-[#0d9488]/15 border border-[#2dd4bf]/20"
+                        ? "bg-[#cc3d00]/15 border border-[#ff5c00]/20"
                         : "hover:bg-[#1a1a26]"
                     )}
                   >
                     <p className={cn(
                       "text-sm font-medium truncate",
-                      selectedDoc?.id === doc.id ? "text-[#5eead4]" : "text-white/70"
+                      selectedDoc?.id === doc.id ? "text-[#ff8a40]" : "text-white/70"
                     )}>
                       {doc.title || "Untitled"}
                     </p>

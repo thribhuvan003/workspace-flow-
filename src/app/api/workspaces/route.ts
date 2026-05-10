@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
           name,
           slug,
           description,
-          color: color ?? "#2dd4bf",
+          color: color ?? "#ff5c00",
           icon,
           ownerId: session.user!.id!,
         },

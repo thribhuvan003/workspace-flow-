@@ -338,40 +338,57 @@ const FEATS = [
 
 function Features({ c }: { c: Theme }) {
   return (
-    <section id="features" className="py-24 px-5 sm:px-8"
+    <section id="features" className="py-28 px-5 sm:px-10"
       style={{ background: c.bg2, borderTop: `1px solid ${c.line}` }}>
       <div className="max-w-6xl mx-auto">
-        <Reveal className="mb-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>
-            Capabilities
-          </p>
-          <h2 style={{ fontSize: "clamp(32px, 4.5vw, 58px)", letterSpacing: "-0.042em", lineHeight: 1.1,
+        <Reveal className="mb-20">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5"
+            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>Capabilities</p>
+          <h2 style={{ fontSize: "clamp(40px, 5.5vw, 72px)", letterSpacing: "-0.045em", lineHeight: 1.05,
             fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
-            Everything your team needs.
+            Everything your<br />team needs.
           </h2>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px rounded-2xl overflow-hidden"
-          style={{ background: c.lineHi }}>
+        {/* Editorial list — each row is a full-width feature item */}
+        <div style={{ borderTop: `1px solid ${c.line}` }}>
           {FEATS.map(({ Icon, n, title, desc }, i) => (
             <Reveal key={title} delay={i * 0.055}>
-              <motion.div className="p-7 h-full" style={{ background: c.bg2 }}
-                whileHover={{ background: c.bg3 }} transition={{ duration: 0.18 }}>
-                <div className="flex gap-4 items-start">
-                  <span className="text-[10px] font-bold shrink-0 mt-1"
-                    style={{ color: c.ink4, fontFamily: "var(--font-mono)", letterSpacing: "0.1em" }}>{n}</span>
-                  <div>
-                    <motion.div className="w-8 h-8 rounded-xl flex items-center justify-center mb-4"
-                      style={{ background: c.accentBg, border: `1px solid ${c.accentBd}` }}
-                      whileHover={{ scale: 1.14, rotate: 7 }} transition={SP}>
-                      <Icon size={15} style={{ color: c.accent }} />
-                    </motion.div>
-                    <h3 className="font-bold mb-2" style={{ fontSize: "14px", letterSpacing: "-0.025em",
-                      color: c.ink, fontFamily: "var(--font-display)" }}>{title}</h3>
-                    <p className="text-[13px] leading-relaxed" style={{ color: c.ink3 }}>{desc}</p>
+              <motion.div
+                className="grid items-center py-9 gap-6 cursor-default"
+                style={{
+                  borderBottom: `1px solid ${c.line}`,
+                  gridTemplateColumns: "80px 1fr 1fr",
+                  paddingLeft: "0px",
+                  transition: "padding-left 0.22s ease",
+                }}
+                whileHover={{ x: 10 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = c.bg3)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
+                {/* Large number */}
+                <motion.span
+                  style={{ fontFamily: "var(--font-display)", fontWeight: 800,
+                    fontSize: "clamp(44px, 4.5vw, 64px)", color: c.accent,
+                    letterSpacing: "-0.06em", lineHeight: 1 }}
+                  whileHover={{ scale: 1.05 }} transition={SP}>
+                  {n}
+                </motion.span>
+                {/* Icon + Title */}
+                <div className="flex items-center gap-5">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                    style={{ background: c.accentBg, border: `1px solid ${c.accentBd}` }}>
+                    <Icon size={18} style={{ color: c.accent }} />
                   </div>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800,
+                    fontSize: "clamp(19px, 2vw, 24px)", letterSpacing: "-0.035em",
+                    lineHeight: 1.15, color: c.ink }}>
+                    {title}
+                  </h3>
                 </div>
+                {/* Description */}
+                <p style={{ fontSize: "15px", lineHeight: 1.72, color: c.ink3, maxWidth: "44ch" }}>
+                  {desc}
+                </p>
               </motion.div>
             </Reveal>
           ))}
@@ -392,47 +409,62 @@ const STEPS = [
 
 function HowItWorks({ c }: { c: Theme }) {
   return (
-    <section className="py-24 px-5 sm:px-8" style={{ background: c.bg, borderTop: `1px solid ${c.line}` }}>
-      <div className="max-w-6xl mx-auto">
-        <Reveal className="mb-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] mb-4"
-            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>
-            How it works
-          </p>
-          <h2 style={{ fontSize: "clamp(32px, 4.5vw, 58px)", letterSpacing: "-0.042em", lineHeight: 1.1,
+    <section style={{ background: c.bg, borderTop: `1px solid ${c.line}` }}>
+      {/* Section header — full width, generous padding */}
+      <div className="max-w-6xl mx-auto px-5 sm:px-10 pt-28 pb-16">
+        <Reveal>
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] mb-5"
+            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>How it works</p>
+          <h2 style={{ fontSize: "clamp(40px, 5.5vw, 72px)", letterSpacing: "-0.045em", lineHeight: 1.05,
             fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
             From zero to shipping.
           </h2>
         </Reveal>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden"
-          style={{ background: c.lineHi, border: `1px solid ${c.line}` }}>
-          {STEPS.map(({ n, title, body }, i) => (
-            <Reveal key={n} delay={i * 0.08}>
-              <motion.div className="p-7 h-full relative overflow-hidden group"
-                style={{ background: c.bg }}
-                whileHover={{ background: c.bg2 }} transition={{ duration: 0.18 }}>
-                {/* Big background number */}
-                <div className="absolute -top-4 -right-2 select-none pointer-events-none"
-                  style={{ fontSize: "clamp(80px, 10vw, 120px)", fontFamily: "var(--font-display)",
-                    fontWeight: 800, color: c.accentBg, letterSpacing: "-0.06em", lineHeight: 1 }}>
-                  {n}
-                </div>
-                {/* Foreground content */}
-                <div className="relative z-10">
-                  <p className="text-[11px] font-bold mb-5" style={{ color: c.accent, fontFamily: "var(--font-mono)", letterSpacing: "0.12em" }}>
-                    STEP {n}
-                  </p>
-                  <h3 className="font-bold mb-3" style={{ fontSize: "16px", letterSpacing: "-0.03em",
-                    color: c.ink, fontFamily: "var(--font-display)", lineHeight: 1.25 }}>
-                    {title}
-                  </h3>
-                  <p className="text-[13px] leading-relaxed" style={{ color: c.ink3 }}>{body}</p>
-                </div>
-              </motion.div>
-            </Reveal>
-          ))}
-        </div>
+      {/* 2×2 grid — full bleed, no max-width constraint */}
+      <div className="grid grid-cols-1 md:grid-cols-2"
+        style={{ borderTop: `1px solid ${c.line}` }}>
+        {STEPS.map(({ n, title, body }, i) => (
+          <Reveal key={n} delay={i * 0.07}>
+            <motion.div
+              className="relative overflow-hidden"
+              style={{
+                padding: "56px 48px 56px 48px",
+                minHeight: "300px",
+                background: c.bg,
+                borderRight: i % 2 === 0 ? `1px solid ${c.line}` : "none",
+                borderBottom: i < 2 ? `1px solid ${c.line}` : "none",
+              }}
+              whileHover={{ background: c.bg2 }} transition={{ duration: 0.2 }}>
+
+              {/* Watermark number — massive, bottom-right */}
+              <div className="absolute select-none pointer-events-none"
+                style={{ bottom: "-24px", right: "-8px",
+                  fontSize: "clamp(140px, 16vw, 200px)",
+                  fontFamily: "var(--font-display)", fontWeight: 800,
+                  color: c.accentBg, letterSpacing: "-0.08em", lineHeight: 0.85 }}>
+                {n}
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 flex flex-col h-full">
+                <p className="mb-6" style={{ fontFamily: "var(--font-mono)", fontSize: 11,
+                  color: c.accent, letterSpacing: "0.16em", fontWeight: 700 }}>
+                  STEP {n}
+                </p>
+                <h3 className="mb-4" style={{ fontFamily: "var(--font-display)", fontWeight: 800,
+                  fontSize: "clamp(24px, 2.8vw, 34px)", color: c.ink,
+                  letterSpacing: "-0.04em", lineHeight: 1.12 }}>
+                  {title}
+                </h3>
+                <p style={{ fontSize: "15px", color: c.ink3, lineHeight: 1.78, maxWidth: "34ch" }}>
+                  {body}
+                </p>
+              </div>
+            </motion.div>
+          </Reveal>
+        ))}
       </div>
     </section>
   );

@@ -33,10 +33,10 @@ const navItems = [
 function Logo() {
   return (
     <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
-      <rect x="2" y="2" width="10" height="10" rx="2" fill="#2dd4bf" />
-      <rect x="16" y="2" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.5" />
-      <rect x="2" y="16" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.5" />
-      <rect x="16" y="16" width="10" height="10" rx="2" fill="#2dd4bf" opacity="0.25" />
+      <rect x="2" y="2" width="10" height="10" rx="2" fill="#ff5c00" />
+      <rect x="16" y="2" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.5" />
+      <rect x="2" y="16" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.5" />
+      <rect x="16" y="16" width="10" height="10" rx="2" fill="#ff5c00" opacity="0.25" />
     </svg>
   );
 }
@@ -51,7 +51,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
   return (
     <motion.aside
       className="flex flex-col w-[220px] min-w-[220px] h-screen sticky top-0"
-      style={{ background: "#09090f", borderRight: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "#0f0d0b", borderRight: "1px solid rgba(255,255,255,0.06)" }}
       initial={{ x: -24, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ ...SPRING, delay: 0.05 }}
@@ -113,7 +113,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/dashboard?new=1" className="flex items-center gap-2.5 text-[13px]" style={{ color: "#2dd4bf" }}>
+              <Link href="/dashboard?new=1" className="flex items-center gap-2.5 text-[13px]" style={{ color: "#ff5c00" }}>
                 <Plus className="w-3.5 h-3.5" /> New Workspace
               </Link>
             </DropdownMenuItem>
@@ -169,7 +169,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
               <Link
                 href={fullHref}
                 className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13px] font-medium relative transition-colors duration-100"
-                style={isActive ? { color: "#2dd4bf" } : { color: "rgba(240,240,248,0.45)" }}
+                style={isActive ? { color: "#ff5c00" } : { color: "rgba(240,240,248,0.45)" }}
                 onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "#f0f0f8"; }}
                 onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "rgba(240,240,248,0.45)"; }}
               >
@@ -177,7 +177,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
                   <motion.span
                     layoutId="nav-active-bg"
                     className="absolute inset-0 rounded-xl"
-                    style={{ background: "rgba(45,212,191,0.08)", border: "1px solid rgba(45,212,191,0.13)" }}
+                    style={{ background: "rgba(255,92,0,0.08)", border: "1px solid rgba(255,92,0,0.13)" }}
                     transition={SPRING}
                   />
                 )}
@@ -188,7 +188,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
                     whileHover={{ opacity: 1 }}
                   />
                 )}
-                <Icon className="w-3.5 h-3.5 shrink-0 relative z-10" style={{ color: isActive ? "#2dd4bf" : undefined }} />
+                <Icon className="w-3.5 h-3.5 shrink-0 relative z-10" style={{ color: isActive ? "#ff5c00" : undefined }} />
                 <span className="relative z-10">{label}</span>
               </Link>
             </motion.div>
@@ -223,7 +223,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
             >
               <Avatar className="h-7 w-7 shrink-0">
                 <AvatarImage src={session?.user?.image ?? ""} />
-                <AvatarFallback className="text-[10px] font-semibold" style={{ background: "rgba(45,212,191,0.15)", color: "#2dd4bf" }}>
+                <AvatarFallback className="text-[10px] font-semibold" style={{ background: "rgba(255,92,0,0.15)", color: "#ff5c00" }}>
                   {getInitials(session?.user?.name ?? session?.user?.email ?? "U")}
                 </AvatarFallback>
               </Avatar>

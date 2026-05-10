@@ -73,7 +73,7 @@ function transformAnalytics(raw: ApiAnalytics): AnalyticsData & { createdLast30:
 
 const STATUS_COLORS: Record<string, string> = {
   TODO: "#6b7280",
-  IN_PROGRESS: "#2dd4bf",
+  IN_PROGRESS: "#ff5c00",
   REVIEW: "#f59e0b",
   DONE: "#10b981",
 };
@@ -228,8 +228,8 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0d9488]/15 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-[#2dd4bf]" />
+            <div className="w-10 h-10 rounded-xl bg-[#cc3d00]/15 flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-[#ff5c00]" />
             </div>
             <div>
               <h1 className="text-xl font-semibold text-white">Analytics</h1>
@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
           <div className="px-8 py-6 space-y-8 max-w-6xl">
             {loadingAnalytics ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="w-6 h-6 animate-spin text-[#2dd4bf]/60" />
+                <Loader2 className="w-6 h-6 animate-spin text-[#ff5c00]/60" />
               </div>
             ) : error ? (
               <div className="flex justify-center py-20">
@@ -256,8 +256,8 @@ export default function AnalyticsPage() {
                     title="Total Tasks"
                     value={analytics.totalTasks}
                     icon={Target}
-                    iconColor="#2dd4bf"
-                    iconBg="rgba(45,212,191,0.15)"
+                    iconColor="#ff5c00"
+                    iconBg="rgba(255,92,0,0.15)"
                   />
                   <StatCard
                     title="Completed"
@@ -277,8 +277,8 @@ export default function AnalyticsPage() {
                     title="Completion Rate"
                     value={`${analytics.completionRate}%`}
                     icon={TrendingUp}
-                    iconColor="#2dd4bf"
-                    iconBg="rgba(45,212,191,0.15)"
+                    iconColor="#ff5c00"
+                    iconBg="rgba(255,92,0,0.15)"
                     subtitle={`${analytics.completedTasks} of ${analytics.totalTasks} done`}
                   />
                 </div>
@@ -303,8 +303,8 @@ export default function AnalyticsPage() {
                             <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                           </linearGradient>
                           <linearGradient id="colorCreated" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#2dd4bf" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#2dd4bf" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#ff5c00" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#ff5c00" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" vertical={false} />
@@ -332,7 +332,7 @@ export default function AnalyticsPage() {
                           type="monotone"
                           dataKey="created"
                           name="Created"
-                          stroke="#2dd4bf"
+                          stroke="#ff5c00"
                           strokeWidth={2}
                           fill="url(#colorCreated)"
                           dot={false}
@@ -470,7 +470,7 @@ export default function AnalyticsPage() {
                         <p className="text-xs text-white/40 mt-1">Completed</p>
                       </div>
                       <div className="rounded-xl bg-[#0d0d14] border border-[#1e1e2e] p-4 text-center">
-                        <p className="text-2xl font-bold text-[#2dd4bf] tabular-nums">
+                        <p className="text-2xl font-bold text-[#ff5c00] tabular-nums">
                           {analytics.completionRate}%
                         </p>
                         <p className="text-xs text-white/40 mt-1">Completion Rate</p>
@@ -483,7 +483,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="h-2 rounded-full bg-[#1e1e2e] overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-[#2dd4bf] to-emerald-500 transition-all duration-700"
+                          className="h-full rounded-full bg-gradient-to-r from-[#ff5c00] to-emerald-500 transition-all duration-700"
                           style={{ width: `${analytics.completionRate}%` }}
                         />
                       </div>
@@ -493,11 +493,11 @@ export default function AnalyticsPage() {
 
 
                 {/* AI Summary */}
-                <div className="rounded-2xl border border-[#2dd4bf]/20 bg-[#2dd4bf]/[0.04] p-6">
+                <div className="rounded-2xl border border-[#ff5c00]/20 bg-[#ff5c00]/[0.04] p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#0d9488]/20 flex items-center justify-center">
-                        <Brain className="w-4.5 h-4.5 text-[#2dd4bf]" />
+                      <div className="w-9 h-9 rounded-xl bg-[#cc3d00]/20 flex items-center justify-center">
+                        <Brain className="w-4.5 h-4.5 text-[#ff5c00]" />
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold text-white">AI Insights</h3>
@@ -513,7 +513,7 @@ export default function AnalyticsPage() {
                             onClick={() => setAiType(t)}
                             className={`px-3 py-1.5 capitalize transition-colors ${
                               aiType === t
-                                ? "bg-[#0d9488]/30 text-[#5eead4]"
+                                ? "bg-[#cc3d00]/30 text-[#ff8a40]"
                                 : "text-white/30 hover:text-white/60 hover:bg-white/5"
                             }`}
                           >
@@ -538,12 +538,12 @@ export default function AnalyticsPage() {
                   </div>
 
                   {aiSummary ? (
-                    <div className="prose prose-sm prose-invert max-w-none text-white/70 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white/90 [&_strong]:text-white [&_ul]:text-white/60 [&_li]:marker:text-[#2dd4bf]">
+                    <div className="prose prose-sm prose-invert max-w-none text-white/70 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white/90 [&_strong]:text-white [&_ul]:text-white/60 [&_li]:marker:text-[#ff5c00]">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiSummary}</ReactMarkdown>
                     </div>
                   ) : (
                     <div className="text-center py-8 text-white/20">
-                      <Brain className="w-8 h-8 mx-auto mb-3 text-[#2dd4bf]/30" />
+                      <Brain className="w-8 h-8 mx-auto mb-3 text-[#ff5c00]/30" />
                       <p className="text-sm">Click &ldquo;Generate&rdquo; to get an AI-powered {aiType} summary</p>
                       <p className="text-xs mt-1 text-white/15">Uses AI to analyze your workspace data</p>
                     </div>

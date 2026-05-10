@@ -5,33 +5,33 @@
   --font-display: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --color-background: #060609;
+  --color-background: #0f0d0b;
   --color-foreground: #f0f0f8;
 
-  --color-card: #0d0d14;
+  --color-card: #1c1916;
   --color-card-foreground: #f0f0f8;
 
   --color-popover: #111119;
   --color-popover-foreground: #f0f0f8;
 
-  --color-primary: #2dd4bf;
-  --color-primary-foreground: #020608;
+  --color-primary: #ff5c00;
+  --color-primary-foreground: #ffffff;
 
-  --color-secondary: #161622;
+  --color-secondary: #1c1916;
   --color-secondary-foreground: #a0a0b8;
 
-  --color-muted: #13131e;
+  --color-muted: #1c1916;
   --color-muted-foreground: #5a5a72;
 
-  --color-accent: #2dd4bf;
-  --color-accent-foreground: #020608;
+  --color-accent: #ff5c00;
+  --color-accent-foreground: #ffffff;
 
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
 
-  --color-border: #18182a;
-  --color-input: #18182a;
-  --color-ring: #2dd4bf;
+  --color-border: #2e2924;
+  --color-input: #2e2924;
+  --color-ring: #ff5c00;
 
   --radius: 0.625rem;
 }
@@ -72,13 +72,13 @@ body {
 /* ─── Teal glow ───────────────────────────────────────────────────────────── */
 
 .glow-primary {
-  box-shadow: 0 0 28px rgba(45, 212, 191, 0.22);
+  box-shadow: 0 0 28px rgba(255, 92, 0, 0.22);
 }
 
 /* ─── Gradient text ───────────────────────────────────────────────────────── */
 
 .gradient-text {
-  background: linear-gradient(135deg, #2dd4bf 0%, #67e8f9 100%);
+  background: linear-gradient(135deg, #ff5c00 0%, #67e8f9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -86,25 +86,25 @@ body {
 
 /* ─── Teal border glow ────────────────────────────────────────────────────── */
 
-.teal-border {
+.orange-border {
   position: relative;
 }
-.teal-border::before {
+.orange-border::before {
   content: "";
   position: absolute;
   inset: -1px;
   border-radius: calc(var(--radius) + 1px);
-  background: linear-gradient(135deg, #2dd4bf, #0d9488);
+  background: linear-gradient(135deg, #ff5c00, #cc3d00);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.22s;
 }
-.teal-border:hover::before { opacity: 1; }
+.orange-border:hover::before { opacity: 1; }
 
 /* ─── Focus ring ──────────────────────────────────────────────────────────── */
 
 .focus-ring:focus-visible {
-  outline: 2px solid #2dd4bf;
+  outline: 2px solid #ff5c00;
   outline-offset: 2px;
 }
 
@@ -137,8 +137,8 @@ body {
 /* ─── Pulse glow (online indicators) ─────────────────────────────────────── */
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.45); }
-  50%       { box-shadow: 0 0 0 4px rgba(45, 212, 191, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 92, 0, 0.45); }
+  50%       { box-shadow: 0 0 0 4px rgba(255, 92, 0, 0); }
 }
 .pulse-glow { animation: pulseGlow 2.2s infinite; }
 
