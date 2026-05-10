@@ -2,21 +2,60 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef } from "react";
-import { ArrowRight, LayoutGrid, Users, BarChart3, FileText, Zap, Plug } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowRight, LayoutGrid, Users, BarChart3, FileText, Zap, Plug, Sun, Moon } from "lucide-react";
 
-const SPRING = { type: "spring" as const, stiffness: 280, damping: 28 };
-const SPRING_SLOW = { type: "spring" as const, stiffness: 120, damping: 20 };
+// ─── Spring presets ────────────────────────────────────────────────────────────
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
+const SP = { type: "spring" as const, stiffness: 300, damping: 30 };
+const SP_SLOW = { type: "spring" as const, stiffness: 110, damping: 22 };
 
-function AnimWords({ text, delay = 0 }: { text: string; delay?: number }) {
+// ─── Theme system ──────────────────────────────────────────────────────────────
+
+const DARK = {
+  bg:       "#0f0d0b",
+  bg2:      "#1c1916",
+  bg3:      "#242018",
+  ink:      "#e8e0d5",
+  ink2:     "rgba(232,224,213,0.62)",
+  ink3:     "rgba(232,224,213,0.36)",
+  ink4:     "rgba(232,224,213,0.18)",
+  accent:   "#ff5c00",
+  accentBg: "rgba(255,92,0,0.1)",
+  accentBd: "rgba(255,92,0,0.24)",
+  line:     "rgba(232,224,213,0.07)",
+  lineHi:   "rgba(232,224,213,0.13)",
+  shadow:   "rgba(0,0,0,0.5)",
+};
+
+const LIGHT = {
+  bg:       "#f5ede0",
+  bg2:      "#ede2d0",
+  bg3:      "#e0d4be",
+  ink:      "#1a1208",
+  ink2:     "rgba(26,18,8,0.62)",
+  ink3:     "rgba(26,18,8,0.36)",
+  ink4:     "rgba(26,18,8,0.18)",
+  accent:   "#c03800",
+  accentBg: "rgba(192,56,0,0.08)",
+  accentBd: "rgba(192,56,0,0.2)",
+  line:     "rgba(26,18,8,0.09)",
+  lineHi:   "rgba(26,18,8,0.15)",
+  shadow:   "rgba(0,0,0,0.12)",
+};
+
+type Theme = typeof DARK;
+
+// ─── Shared utils ──────────────────────────────────────────────────────────────
+
+function AnimWords({ text, delay = 0, c }: { text: string; delay?: number; c: Theme }) {
   return (
     <>
       {text.split(" ").map((w, i) => (
         <motion.span key={i} className="inline-block" style={{ marginRight: "0.22em" }}
-          initial={{ opacity: 0, y: 28, rotate: 1.5 }} animate={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ ...SPRING, delay: delay + i * 0.065 }}>
+          initial={{ opacity: 0, y: 30, rotate: 1.2 }}
+          animate={{ opacity: 1, y: 0, rotate: 0 }}
+          transition={{ ...SP, delay: delay + i * 0.07 }}>
           {w}
         </motion.span>
       ))}
@@ -24,63 +63,88 @@ function AnimWords({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+function Reveal({ children, delay = 0, className }: {
+  children: React.ReactNode; delay?: number; className?: string;
+}) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-70px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
     <motion.div ref={ref} className={className}
-      initial={{ opacity: 0, y: 36 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ ...SPRING, delay }}>
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ ...SP, delay }}>
       {children}
     </motion.div>
   );
 }
 
-function Logo({ size = 22 }: { size?: number }) {
+function Logo({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <rect x="2" y="2" width="10" height="10" rx="2.5" fill="#2dd4bf" />
-      <rect x="16" y="2" width="10" height="10" rx="2.5" fill="#2dd4bf" opacity="0.45" />
-      <rect x="2" y="16" width="10" height="10" rx="2.5" fill="#2dd4bf" opacity="0.45" />
-      <rect x="16" y="16" width="10" height="10" rx="2.5" fill="#2dd4bf" opacity="0.18" />
+      <rect x="2"  y="2"  width="10" height="10" rx="2.5" fill="currentColor" />
+      <rect x="16" y="2"  width="10" height="10" rx="2.5" fill="currentColor" opacity="0.45" />
+      <rect x="2"  y="16" width="10" height="10" rx="2.5" fill="currentColor" opacity="0.45" />
+      <rect x="16" y="16" width="10" height="10" rx="2.5" fill="currentColor" opacity="0.2" />
     </svg>
   );
 }
 
 // ─── Navbar ────────────────────────────────────────────────────────────────────
 
-function Navbar() {
+function Navbar({ c, dark, onToggle }: { c: Theme; dark: boolean; onToggle: () => void }) {
   const { scrollY } = useScroll();
-  const bg = useTransform(scrollY, [0, 60], ["rgba(7,7,15,0)", "rgba(7,7,15,0.92)"]);
-  const blur = useTransform(scrollY, [0, 60], [0, 16]);
-  const border = useTransform(scrollY, [0, 60], ["rgba(255,255,255,0)", "rgba(255,255,255,0.07)"]);
+  const bgA = useTransform(scrollY, [0, 60], [0, 0.92]);
+  const blurV = useTransform(scrollY, [0, 60], [0, 16]);
 
   return (
     <motion.header className="fixed top-0 inset-x-0 z-50"
-      style={{ backdropFilter: `blur(${blur}px)` as unknown as string, WebkitBackdropFilter: `blur(${blur}px)` as unknown as string }}>
-      <motion.div className="flex items-center justify-between h-14 px-6 sm:px-10 max-w-6xl mx-auto"
-        style={{ background: bg as unknown as string, borderBottom: `1px solid ${border}` as unknown as string }}>
+      style={{ backdropFilter: `blur(${blurV}px)` as unknown as string }}>
+      <motion.div
+        className="flex items-center justify-between h-14 px-5 sm:px-8 max-w-6xl mx-auto"
+        style={{ borderBottom: `1px solid ${c.line}`, backgroundColor: `color-mix(in srgb, ${c.bg} calc(${bgA} * 100%), transparent)` } as React.CSSProperties}>
 
-        <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SPRING, delay: 0.1 }}>
-          <Link href="/" className="flex items-center gap-2.5 group">
+        {/* Logo */}
+        <motion.div initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SP, delay: 0.08 }}>
+          <Link href="/" className="flex items-center gap-2.5" style={{ color: c.accent }}>
             <Logo size={18} />
-            <span className="font-bold text-white text-[14px]" style={{ letterSpacing: "-0.03em" }}>WorkspaceFlow</span>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, letterSpacing: "-0.03em", color: c.ink }}>
+              WorkspaceFlow
+            </span>
           </Link>
         </motion.div>
 
+        {/* Actions */}
         <motion.div className="flex items-center gap-2"
-          initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SPRING, delay: 0.15 }}>
+          initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SP, delay: 0.12 }}>
+
+          {/* Theme toggle */}
+          <motion.button
+            onClick={onToggle}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+            style={{ background: c.accentBg, border: `1px solid ${c.accentBd}`, color: c.accent }}
+            whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+            title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            <motion.div
+              key={dark ? "moon" : "sun"}
+              initial={{ rotate: -30, opacity: 0, scale: 0.6 }}
+              animate={{ rotate: 0, opacity: 1, scale: 1 }}
+              transition={{ ...SP }}>
+              {dark ? <Moon size={14} /> : <Sun size={14} />}
+            </motion.div>
+          </motion.button>
+
           <Link href="/login"
-            className="hidden sm:inline-flex text-[13px] font-medium px-4 py-2 rounded-lg transition-colors"
-            style={{ color: "rgba(240,240,248,0.45)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#f0f0f8")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(240,240,248,0.45)")}>
+            className="hidden sm:inline-flex text-[13px] font-medium px-3.5 py-2 rounded-lg transition-colors"
+            style={{ color: c.ink3 }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = c.ink)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = c.ink3)}>
             Sign in
           </Link>
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+
+          <motion.div whileHover={{ scale: 1.04, y: -1 }} whileTap={{ scale: 0.96 }}>
             <Link href="/register"
-              className="inline-flex items-center gap-1.5 text-[13px] font-semibold px-4 py-2 rounded-xl text-[#030a09]"
-              style={{ background: "#2dd4bf", boxShadow: "0 0 20px rgba(45,212,191,0.22)" }}>
+              className="inline-flex items-center gap-1.5 text-[13px] font-bold px-4 py-2 rounded-xl"
+              style={{ background: c.accent, color: "#fff", boxShadow: `0 0 20px ${c.accentBg}` }}>
               Get started <ArrowRight size={12} strokeWidth={2.5} />
             </Link>
           </motion.div>
@@ -92,46 +156,46 @@ function Navbar() {
 
 // ─── Kanban preview ────────────────────────────────────────────────────────────
 
-const columns = [
-  { id: "todo", label: "To Do", dot: "#4a4a6a",
-    cards: [{ title: "Auth flow redesign", tag: "Design" }, { title: "Rate limiting", tag: "Backend" }] },
-  { id: "prog", label: "In Progress", dot: "#2dd4bf",
-    cards: [{ title: "Kanban drag & drop", tag: "Feature" }, { title: "Socket.io rooms", tag: "Backend" }, { title: "Mobile layout", tag: "Frontend" }] },
-  { id: "review", label: "Review", dot: "#f59e0b",
-    cards: [{ title: "Analytics v1", tag: "Feature" }, { title: "Invite emails", tag: "Backend" }] },
-  { id: "done", label: "Done", dot: "#22c55e",
-    cards: [{ title: "NextAuth v5 setup", tag: "Security" }, { title: "Prisma schema", tag: "Backend" }] },
+const BOARD_COLS = [
+  { id: "todo",   label: "To Do",       dot: "#5a5060",
+    cards: [{ t: "Auth flow redesign", tag: "Design" }, { t: "Rate limiting", tag: "Backend" }] },
+  { id: "prog",   label: "In Progress", dot: "#ff5c00",
+    cards: [{ t: "Kanban drag & drop", tag: "Feature" }, { t: "Socket.io rooms", tag: "Backend" }, { t: "Mobile layout", tag: "Frontend" }] },
+  { id: "review", label: "Review",      dot: "#f59e0b",
+    cards: [{ t: "Analytics v1", tag: "Feature" }, { t: "Invite emails", tag: "Backend" }] },
+  { id: "done",   label: "Done",        dot: "#22c55e",
+    cards: [{ t: "NextAuth v5 setup", tag: "Security" }, { t: "Prisma schema", tag: "Backend" }] },
 ];
-const tagColors: Record<string, string> = { Design: "#a78bfa", Backend: "#60a5fa", Frontend: "#f472b6", Feature: "#2dd4bf", Security: "#fb923c" };
+const TAG_CLR: Record<string, string> = { Design: "#a78bfa", Backend: "#60a5fa", Frontend: "#f472b6", Feature: "#ff5c00", Security: "#22c55e" };
 
-function KanbanPreview() {
+function KanbanPreview({ c }: { c: Theme }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <motion.div ref={ref} className="rounded-2xl overflow-hidden"
-      style={{ border: "1px solid rgba(255,255,255,0.08)", background: "#06060f" }}
-      initial={{ opacity: 0, y: 48, scale: 0.97 }} animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ ...SPRING_SLOW, delay: 0.1 }}>
-      {/* Chrome */}
-      <div className="flex items-center gap-1.5 px-4 h-9"
-        style={{ background: "#0a0a18", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        {["#ef4444","#f59e0b","#22c55e"].map((c, i) => (
-          <motion.span key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c, opacity: 0.6 }}
-            initial={{ scale: 0 }} animate={inView ? { scale: 1 } : {}} transition={{ delay: 0.3 + i * 0.06, type: "spring" as const, stiffness: 400 }} />
+    <motion.div ref={ref} className="rounded-2xl overflow-hidden select-none"
+      style={{ border: `1px solid ${c.lineHi}`, background: c.bg2 }}
+      initial={{ opacity: 0, y: 44, scale: 0.97 }} animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ ...SP_SLOW, delay: 0.08 }}>
+      {/* Chrome bar */}
+      <div className="flex items-center gap-1.5 px-4 h-9" style={{ background: c.bg3, borderBottom: `1px solid ${c.line}` }}>
+        {["#ef4444","#f59e0b","#22c55e"].map((col, i) => (
+          <motion.span key={col} className="w-2 h-2 rounded-full" style={{ background: col, opacity: 0.7 }}
+            initial={{ scale: 0 }} animate={inView ? { scale: 1 } : {}}
+            transition={{ delay: 0.28 + i * 0.06, type: "spring" as const, stiffness: 420 }} />
         ))}
-        <div className="ml-3 px-2 h-5 rounded flex items-center"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.05)", minWidth: 150 }}>
-          <span className="text-[10px]" style={{ color: "rgba(255,255,255,0.2)" }}>app.workspaceflow.io/board</span>
+        <div className="ml-3 flex items-center px-2 h-5 rounded" style={{ background: c.line, minWidth: 140 }}>
+          <span className="text-[10px]" style={{ color: c.ink4, fontFamily: "var(--font-mono)" }}>
+            app.workspaceflow.io/board
+          </span>
         </div>
       </div>
       <div className="flex">
         {/* Mini sidebar */}
-        <div className="w-9 flex flex-col items-center pt-3 gap-3 shrink-0"
-          style={{ borderRight: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="w-9 flex flex-col items-center pt-3 gap-3 shrink-0" style={{ borderRight: `1px solid ${c.line}` }}>
           {[LayoutGrid, FileText, Users, BarChart3].map((Icon, i) => (
             <motion.div key={i} className="w-5 h-5 rounded flex items-center justify-center"
-              style={{ background: i === 0 ? "rgba(45,212,191,0.1)" : "transparent", color: i === 0 ? "#2dd4bf" : "rgba(255,255,255,0.18)" }}
-              initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.4 + i * 0.07 }}>
+              style={{ background: i === 0 ? c.accentBg : "transparent", color: i === 0 ? c.accent : c.ink4 }}
+              initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.38 + i * 0.07 }}>
               <Icon size={11} />
             </motion.div>
           ))}
@@ -139,24 +203,24 @@ function KanbanPreview() {
         {/* Board */}
         <div className="flex-1 overflow-x-auto p-3">
           <div className="flex gap-2 min-w-max">
-            {columns.map((col, ci) => (
-              <div key={col.id} className="w-[152px] shrink-0">
-                <motion.div className="flex items-center gap-1.5 mb-2 px-0.5"
-                  initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.35 + ci * 0.07 }}>
+            {BOARD_COLS.map((col, ci) => (
+              <div key={col.id} className="w-[144px] shrink-0">
+                <motion.div className="flex items-center gap-1.5 mb-2"
+                  initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.33 + ci * 0.07 }}>
                   <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: col.dot }} />
-                  <span className="text-[10px] font-semibold" style={{ color: "rgba(240,240,248,0.65)" }}>{col.label}</span>
-                  <span className="ml-auto text-[9px] px-1 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.28)" }}>{col.cards.length}</span>
+                  <span className="text-[10px] font-semibold" style={{ color: c.ink2, fontFamily: "var(--font-display)" }}>{col.label}</span>
+                  <span className="ml-auto text-[9px] px-1 rounded-full" style={{ background: c.line, color: c.ink4, fontFamily: "var(--font-mono)" }}>{col.cards.length}</span>
                 </motion.div>
                 <div className="space-y-1.5">
                   {col.cards.map((card, ii) => (
                     <motion.div key={ii} className="p-2.5 rounded-lg"
-                      style={{ background: "#0e0e1f", border: "1px solid rgba(255,255,255,0.06)" }}
-                      initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-                      transition={{ delay: 0.45 + ci * 0.07 + ii * 0.05 }}
-                      whileHover={{ y: -1, borderColor: "rgba(45,212,191,0.2)" }}>
-                      <p className="text-[10px] font-medium mb-1.5 leading-snug" style={{ color: "rgba(240,240,248,0.82)" }}>{card.title}</p>
-                      <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full"
-                        style={{ color: tagColors[card.tag] ?? "#2dd4bf", background: `${tagColors[card.tag] ?? "#2dd4bf"}18` }}>
+                      style={{ background: c.bg, border: `1px solid ${c.line}` }}
+                      initial={{ opacity: 0, y: 8 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ delay: 0.42 + ci * 0.07 + ii * 0.05 }}
+                      whileHover={{ y: -1.5, borderColor: c.accentBd }}>
+                      <p className="text-[10px] font-medium mb-1.5 leading-snug" style={{ color: c.ink }}>{card.t}</p>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                        style={{ color: TAG_CLR[card.tag] ?? c.accent, background: `${TAG_CLR[card.tag] ?? c.accent}18`, fontFamily: "var(--font-mono)" }}>
                         {card.tag}
                       </span>
                     </motion.div>
@@ -173,83 +237,88 @@ function KanbanPreview() {
 
 // ─── Hero ──────────────────────────────────────────────────────────────────────
 
-function Hero() {
+function Hero({ c, dark }: { c: Theme; dark: boolean }) {
   const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 280], [1, 0]);
-  const y = useTransform(scrollY, [0, 400], [0, -50]);
+  const opacity = useTransform(scrollY, [0, 260], [1, 0]);
+  const yParallax = useTransform(scrollY, [0, 400], [0, -48]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-20 px-6 sm:px-10 overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #07070f 0%, #090916 55%, #07080f 100%)" }}>
+    <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-20 px-5 sm:px-8 overflow-hidden"
+      style={{ background: dark ? `linear-gradient(150deg, #0f0d0b 0%, #1a1310 55%, #0f0d0b 100%)` : `linear-gradient(150deg, #f5ede0 0%, #ede2d0 55%, #f5ede0 100%)` }}>
+
       {/* Dot grid */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px)",
-        backgroundSize: "28px 28px",
+        backgroundImage: `radial-gradient(${dark ? "rgba(232,224,213,0.055)" : "rgba(26,18,8,0.07)"} 1px, transparent 1px)`,
+        backgroundSize: "26px 26px",
       }} />
-      {/* Glow */}
-      <motion.div className="absolute pointer-events-none" style={{ y,
-        top: "5%", left: "30%", width: "640px", height: "640px",
-        background: "radial-gradient(ellipse, rgba(45,212,191,0.055) 0%, transparent 65%)",
-        filter: "blur(48px)",
-      }} />
+
+      {/* Accent glow */}
+      <motion.div className="absolute pointer-events-none" style={{ y: yParallax,
+        top: "8%", left: "28%", width: "580px", height: "580px",
+        background: `radial-gradient(ellipse, ${c.accentBg} 0%, transparent 68%)`,
+        filter: "blur(52px)" }} />
       <motion.div className="absolute pointer-events-none"
-        style={{ bottom: "10%", right: "5%", width: "400px", height: "400px",
-          background: "radial-gradient(ellipse, rgba(99,102,241,0.04) 0%, transparent 65%)",
-          filter: "blur(48px)" }} />
+        style={{ bottom: "15%", right: "8%", width: "340px", height: "340px",
+          background: dark ? "radial-gradient(ellipse, rgba(99,60,20,0.15) 0%, transparent 65%)" : "radial-gradient(ellipse, rgba(192,56,0,0.06) 0%, transparent 65%)",
+          filter: "blur(44px)" }} />
 
       <motion.div className="relative z-10 max-w-6xl mx-auto w-full" style={{ opacity }}>
-        {/* Beta pill */}
+        {/* Label */}
         <motion.div className="mb-10 flex"
-          initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ ...SPRING, delay: 0.08 }}>
+          initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} transition={{ ...SP, delay: 0.06 }}>
           <span className="inline-flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-full"
-            style={{ color: "#2dd4bf", background: "rgba(45,212,191,0.07)", border: "1px solid rgba(45,212,191,0.18)", letterSpacing: "0.08em", fontFamily: "var(--font-mono)" }}>
-            <motion.span className="w-1.5 h-1.5 rounded-full" style={{ background: "#2dd4bf" }}
-              animate={{ opacity: [1, 0.25, 1] }} transition={{ repeat: Infinity, duration: 2.2 }} />
+            style={{ color: c.accent, background: c.accentBg, border: `1px solid ${c.accentBd}`, letterSpacing: "0.09em", fontFamily: "var(--font-mono)" }}>
+            <motion.span className="w-1.5 h-1.5 rounded-full" style={{ background: c.accent }}
+              animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 2.4 }} />
             OPEN BETA
           </span>
         </motion.div>
 
-        {/* Headline */}
-        <h1 className="text-white mb-7"
-          style={{ fontSize: "clamp(48px, 6.5vw, 92px)", letterSpacing: "-0.045em", lineHeight: "1.03", fontFamily: "var(--font-serif)", fontWeight: 400 }}>
-          <AnimWords text="Your team." delay={0.12} />
+        {/* Headline — Bricolage Grotesque */}
+        <h1 className="mb-8"
+          style={{ fontSize: "clamp(50px, 7vw, 96px)", letterSpacing: "-0.048em", lineHeight: "1.01",
+            fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
+          <AnimWords text="Your team." delay={0.1} c={c} />
           <br />
-          <AnimWords text="One workspace." delay={0.3} />
+          <AnimWords text="One workspace." delay={0.28} c={c} />
           <br />
-          <motion.span className="italic" style={{ color: "#2dd4bf" }}
-            initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SPRING, delay: 0.62 }}>
+          <motion.span style={{ color: c.accent, fontStyle: "italic", fontWeight: 700 }}
+            initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SP, delay: 0.6 }}>
             No chaos.
           </motion.span>
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div>
-            <motion.p className="text-[17px] leading-[1.75] mb-9"
-              style={{ color: "rgba(240,240,248,0.44)", maxWidth: "46ch" }}
-              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.72 }}>
+            <motion.p className="text-[17px] leading-[1.78] mb-9" style={{ color: c.ink2, maxWidth: "44ch" }}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SP, delay: 0.68 }}>
               Kanban boards, real-time docs, team presence, and sprint analytics —
-              all in one place. Built for teams who ship.
+              all wired together. Built for developers and teams who actually ship.
             </motion.p>
 
             <motion.div className="flex flex-wrap gap-3"
-              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING, delay: 0.82 }}>
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SP, delay: 0.78 }}>
+              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.96 }}>
                 <Link href="/register"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-[#030a09]"
-                  style={{ background: "#2dd4bf", boxShadow: "0 0 32px rgba(45,212,191,0.28)" }}>
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white"
+                  style={{ background: c.accent, boxShadow: `0 0 28px ${c.accentBg}` }}>
                   Start for free <ArrowRight size={14} strokeWidth={2.5} />
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
                 <Link href="/login"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm"
-                  style={{ color: "rgba(240,240,248,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  style={{ color: c.ink3, border: `1px solid ${c.lineHi}` }}>
                   Sign in
                 </Link>
               </motion.div>
             </motion.div>
           </div>
-          <KanbanPreview />
+
+          <motion.div
+            initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SP_SLOW, delay: 0.3 }}>
+            <KanbanPreview c={c} />
+          </motion.div>
         </div>
       </motion.div>
     </section>
@@ -258,46 +327,49 @@ function Hero() {
 
 // ─── Features ──────────────────────────────────────────────────────────────────
 
-const features = [
-  { icon: LayoutGrid, n: "01", title: "Kanban board", desc: "Drag-and-drop columns with live sync. Everyone sees moves as they happen." },
-  { icon: Users,      n: "02", title: "Live presence",  desc: "See who's online, what they're editing, and typing indicators on every comment." },
-  { icon: FileText,   n: "03", title: "Shared docs",    desc: "Write specs and runbooks that update in real time — no Google Docs tab-switching." },
-  { icon: BarChart3,  n: "04", title: "Analytics",      desc: "Velocity, cycle time, and bottleneck detection. Know where sprints go wrong." },
-  { icon: Plug,       n: "05", title: "Integrations",   desc: "GitHub, Slack, Discord. Pipe task activity into the tools your team already uses." },
-  { icon: Zap,        n: "06", title: "AI assistant",   desc: "One click turns a task title into a full description. Gemini does the grunt work." },
+const FEATS = [
+  { Icon: LayoutGrid, n: "01", title: "Kanban board",      desc: "Drag-and-drop with live sync. Every move is visible to your whole team instantly." },
+  { Icon: Users,      n: "02", title: "Live presence",     desc: "See who's online and what they're editing. Typing indicators on every thread." },
+  { Icon: FileText,   n: "03", title: "Shared docs",       desc: "Specs and runbooks that update in real time. No more copy-pasting between tabs." },
+  { Icon: BarChart3,  n: "04", title: "Sprint analytics",  desc: "Velocity, cycle time, bottlenecks. Know where your sprint goes wrong before it does." },
+  { Icon: Plug,       n: "05", title: "Integrations",      desc: "GitHub, Slack, Discord. Your task activity flows into the tools you already use." },
+  { Icon: Zap,        n: "06", title: "AI assistant",      desc: "One click turns a task title into a complete description. Gemini handles the grunt work." },
 ];
 
-function Features() {
+function Features({ c }: { c: Theme }) {
   return (
-    <section id="features" className="py-28 px-6 sm:px-10"
-      style={{ background: "linear-gradient(180deg, #09091a 0%, #07070f 100%)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+    <section id="features" className="py-24 px-5 sm:px-8"
+      style={{ background: c.bg2, borderTop: `1px solid ${c.line}` }}>
       <div className="max-w-6xl mx-auto">
         <Reveal className="mb-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] mb-4"
-            style={{ color: "#2dd4bf", fontFamily: "var(--font-mono)" }}>Capabilities</p>
-          <h2 style={{ fontSize: "clamp(34px, 4.5vw, 60px)", letterSpacing: "-0.04em", lineHeight: 1.1, fontFamily: "var(--font-serif)", fontWeight: 400, color: "#f0f0f8" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] mb-4"
+            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>
+            Capabilities
+          </p>
+          <h2 style={{ fontSize: "clamp(32px, 4.5vw, 58px)", letterSpacing: "-0.042em", lineHeight: 1.1,
+            fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
             Everything your team needs.
           </h2>
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px rounded-2xl overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.05)" }}>
-          {features.map(({ icon: Icon, n, title, desc }, i) => (
+          style={{ background: c.lineHi }}>
+          {FEATS.map(({ Icon, n, title, desc }, i) => (
             <Reveal key={title} delay={i * 0.055}>
-              <motion.div className="p-7 h-full"
-                style={{ background: "#08081a" }}
-                whileHover={{ background: "#0d0d22" }}>
+              <motion.div className="p-7 h-full" style={{ background: c.bg2 }}
+                whileHover={{ background: c.bg3 }} transition={{ duration: 0.18 }}>
                 <div className="flex gap-4 items-start">
-                  <span className="text-[10px] font-bold shrink-0 mt-0.5"
-                    style={{ color: "rgba(240,240,248,0.18)", fontFamily: "var(--font-mono)", letterSpacing: "0.1em" }}>{n}</span>
+                  <span className="text-[10px] font-bold shrink-0 mt-1"
+                    style={{ color: c.ink4, fontFamily: "var(--font-mono)", letterSpacing: "0.1em" }}>{n}</span>
                   <div>
                     <motion.div className="w-8 h-8 rounded-xl flex items-center justify-center mb-4"
-                      style={{ background: "rgba(45,212,191,0.07)", border: "1px solid rgba(45,212,191,0.12)" }}
-                      whileHover={{ scale: 1.12, rotate: 6 }} transition={SPRING}>
-                      <Icon size={15} style={{ color: "#2dd4bf" }} />
+                      style={{ background: c.accentBg, border: `1px solid ${c.accentBd}` }}
+                      whileHover={{ scale: 1.14, rotate: 7 }} transition={SP}>
+                      <Icon size={15} style={{ color: c.accent }} />
                     </motion.div>
-                    <h3 className="font-semibold mb-2 text-white" style={{ fontSize: "14px", letterSpacing: "-0.02em" }}>{title}</h3>
-                    <p className="text-[13px] leading-relaxed" style={{ color: "rgba(240,240,248,0.38)" }}>{desc}</p>
+                    <h3 className="font-bold mb-2" style={{ fontSize: "14px", letterSpacing: "-0.025em",
+                      color: c.ink, fontFamily: "var(--font-display)" }}>{title}</h3>
+                    <p className="text-[13px] leading-relaxed" style={{ color: c.ink3 }}>{desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -311,35 +383,52 @@ function Features() {
 
 // ─── How it works ──────────────────────────────────────────────────────────────
 
-const steps = [
-  { n: "01", title: "Open a workspace", body: "Name it, pick a color, invite your team. You're live in under a minute." },
-  { n: "02", title: "Build your board",  body: "Add tasks, set priorities, assign teammates. Drag between columns as work moves forward." },
-  { n: "03", title: "Work together, live", body: "Every change is instant. Comments thread to tasks. Docs update as you type." },
-  { n: "04", title: "See where time goes", body: "Velocity, cycle time, and blockers — all visible. Ship without the post-mortem surprises." },
+const STEPS = [
+  { n: "01", title: "Open a workspace",      body: "Name it, pick a color, invite your team. You're live in under a minute." },
+  { n: "02", title: "Build the board",       body: "Add tasks, set priorities, assign teammates. Drag between columns as work progresses." },
+  { n: "03", title: "Work together, live",   body: "Every change is instant. Comments thread to tasks. Docs update as you type." },
+  { n: "04", title: "See where time goes",   body: "Velocity, cycle time, blockers — all in one view. Ship without the post-mortem surprises." },
 ];
 
-function HowItWorks() {
+function HowItWorks({ c }: { c: Theme }) {
   return (
-    <section className="py-28 px-6 sm:px-10"
-      style={{ background: "#07070f", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+    <section className="py-24 px-5 sm:px-8" style={{ background: c.bg, borderTop: `1px solid ${c.line}` }}>
       <div className="max-w-6xl mx-auto">
         <Reveal className="mb-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] mb-4"
-            style={{ color: "#2dd4bf", fontFamily: "var(--font-mono)" }}>How it works</p>
-          <h2 style={{ fontSize: "clamp(34px, 4.5vw, 60px)", letterSpacing: "-0.04em", lineHeight: 1.1, fontFamily: "var(--font-serif)", fontWeight: 400, color: "#f0f0f8" }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] mb-4"
+            style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>
+            How it works
+          </p>
+          <h2 style={{ fontSize: "clamp(32px, 4.5vw, 58px)", letterSpacing: "-0.042em", lineHeight: 1.1,
+            fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
             From zero to shipping.
           </h2>
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.05)" }}>
-          {steps.map(({ n, title, body }, i) => (
+          style={{ background: c.lineHi, border: `1px solid ${c.line}` }}>
+          {STEPS.map(({ n, title, body }, i) => (
             <Reveal key={n} delay={i * 0.08}>
-              <motion.div className="p-8" style={{ background: "#07070f" }} whileHover={{ background: "#0c0c1c" }}>
-                <div className="text-[56px] font-bold mb-5 leading-none"
-                  style={{ color: "rgba(45,212,191,0.12)", fontFamily: "var(--font-serif)", letterSpacing: "-0.05em" }}>{n}</div>
-                <h3 className="text-white mb-2.5" style={{ fontSize: "15px", fontWeight: 600, letterSpacing: "-0.025em" }}>{title}</h3>
-                <p className="text-[13px] leading-relaxed" style={{ color: "rgba(240,240,248,0.38)" }}>{body}</p>
+              <motion.div className="p-7 h-full relative overflow-hidden group"
+                style={{ background: c.bg }}
+                whileHover={{ background: c.bg2 }} transition={{ duration: 0.18 }}>
+                {/* Big background number */}
+                <div className="absolute -top-4 -right-2 select-none pointer-events-none"
+                  style={{ fontSize: "clamp(80px, 10vw, 120px)", fontFamily: "var(--font-display)",
+                    fontWeight: 800, color: c.accentBg, letterSpacing: "-0.06em", lineHeight: 1 }}>
+                  {n}
+                </div>
+                {/* Foreground content */}
+                <div className="relative z-10">
+                  <p className="text-[11px] font-bold mb-5" style={{ color: c.accent, fontFamily: "var(--font-mono)", letterSpacing: "0.12em" }}>
+                    STEP {n}
+                  </p>
+                  <h3 className="font-bold mb-3" style={{ fontSize: "16px", letterSpacing: "-0.03em",
+                    color: c.ink, fontFamily: "var(--font-display)", lineHeight: 1.25 }}>
+                    {title}
+                  </h3>
+                  <p className="text-[13px] leading-relaxed" style={{ color: c.ink3 }}>{body}</p>
+                </div>
               </motion.div>
             </Reveal>
           ))}
@@ -351,42 +440,51 @@ function HowItWorks() {
 
 // ─── CTA ───────────────────────────────────────────────────────────────────────
 
-function CTA() {
+function CTA({ c }: { c: Theme }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-50px" });
   return (
-    <section className="py-28 px-6 sm:px-10"
-      style={{ background: "linear-gradient(180deg, #09091a 0%, #07070f 100%)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-      <div className="max-w-6xl mx-auto" ref={ref}>
-        <motion.div className="rounded-2xl overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #0c1e1b 0%, #0a0a18 100%)", border: "1px solid rgba(45,212,191,0.18)" }}
+    <section className="py-24 px-5 sm:px-8" style={{ background: c.bg2, borderTop: `1px solid ${c.line}` }}>
+      <div className="max-w-5xl mx-auto" ref={ref}>
+        <motion.div className="rounded-2xl overflow-hidden relative"
+          style={{ border: `1px solid ${c.accentBd}`, background: c.bg3 }}
           initial={{ opacity: 0, scale: 0.97 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
-          transition={SPRING_SLOW}>
+          transition={SP_SLOW}>
           {/* Glow */}
-          <motion.div className="absolute pointer-events-none"
-            style={{ top: "-30%", right: "10%", width: "350px", height: "350px",
-              background: "radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 65%)", filter: "blur(32px)" }}
-            animate={{ scale: [1, 1.08, 1] }} transition={{ repeat: Infinity, duration: 5 }} />
+          <motion.div className="absolute top-0 right-0 pointer-events-none"
+            style={{ width: "380px", height: "380px",
+              background: `radial-gradient(circle, ${c.accentBg} 0%, transparent 68%)`,
+              filter: "blur(40px)" }}
+            animate={{ scale: [1, 1.06, 1] }} transition={{ repeat: Infinity, duration: 5 }} />
+
           <div className="relative z-10 px-10 py-20 text-center">
-            <h2 className="text-white mb-5"
-              style={{ fontSize: "clamp(34px, 4.5vw, 64px)", fontFamily: "var(--font-serif)", fontWeight: 400, letterSpacing: "-0.04em" }}>
-              Your team is <span className="italic" style={{ color: "#2dd4bf" }}>waiting.</span>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] mb-5"
+              style={{ color: c.accent, fontFamily: "var(--font-mono)" }}>
+              Ready to ship?
+            </p>
+            <h2 className="mb-4" style={{ fontSize: "clamp(32px, 5vw, 62px)",
+              fontFamily: "var(--font-display)", fontWeight: 800, letterSpacing: "-0.045em", color: c.ink, lineHeight: 1.05 }}>
+              Your team is{" "}
+              <motion.span className="italic" style={{ color: c.accent }}
+                animate={{ opacity: [0.8, 1, 0.8] }} transition={{ repeat: Infinity, duration: 3 }}>
+                waiting.
+              </motion.span>
             </h2>
-            <p className="text-[15px] mb-10 mx-auto" style={{ color: "rgba(240,240,248,0.38)", maxWidth: "40ch", lineHeight: 1.7 }}>
-              Free to start. No credit card. Takes two minutes to set up.
+            <p className="text-[15px] mb-10 mx-auto" style={{ color: c.ink2, maxWidth: "38ch", lineHeight: 1.72 }}>
+              Free to start. No credit card. Set up in two minutes.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
-              <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+              <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.96 }}>
                 <Link href="/register"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-[#030a09]"
-                  style={{ background: "#2dd4bf", boxShadow: "0 0 36px rgba(45,212,191,0.3)" }}>
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white"
+                  style={{ background: c.accent, boxShadow: `0 0 32px ${c.accentBg}` }}>
                   Start for free <ArrowRight size={14} strokeWidth={2.5} />
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
                 <Link href="/login"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm"
-                  style={{ color: "rgba(240,240,248,0.48)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  style={{ color: c.ink3, border: `1px solid ${c.lineHi}` }}>
                   Sign in
                 </Link>
               </motion.div>
@@ -400,35 +498,27 @@ function CTA() {
 
 // ─── Footer ────────────────────────────────────────────────────────────────────
 
-function Footer() {
+function Footer({ c }: { c: Theme }) {
   return (
-    <footer style={{ background: "#07070f", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-10">
-        {/* Wordmark */}
-        <div className="pt-12 pb-8" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-          <span className="select-none" style={{
-            fontSize: "clamp(52px, 9vw, 108px)", letterSpacing: "-0.065em",
-            color: "rgba(255,255,255,0.035)", fontFamily: "var(--font-serif)", fontWeight: 700, lineHeight: 1,
-          }}>workspaceflow</span>
-        </div>
-
-        {/* Bottom row */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 py-8">
-          <div className="flex items-center gap-2.5">
+    <footer style={{ background: c.bg, borderTop: `1px solid ${c.line}` }}>
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2.5 mb-2" style={{ color: c.accent }}>
             <Logo size={16} />
-            <span className="text-[13px] font-semibold text-white" style={{ letterSpacing: "-0.02em" }}>WorkspaceFlow</span>
-            <span className="text-[13px]" style={{ color: "rgba(240,240,248,0.22)" }}>— Real-time project management.</span>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 13, letterSpacing: "-0.025em", color: c.ink }}>
+              WorkspaceFlow
+            </span>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="https://github.com/thribhuvan003/workspace-flow" target="_blank" rel="noopener noreferrer"
-              className="text-[12px] transition-colors"
-              style={{ color: "rgba(240,240,248,0.3)", fontFamily: "var(--font-mono)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#f0f0f8")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(240,240,248,0.3)")}>
-              GitHub
-            </a>
-            <span className="text-[11px]" style={{ color: "rgba(240,240,248,0.15)", fontFamily: "var(--font-mono)" }}>v1.0.0</span>
-          </div>
+          <p className="text-[12px]" style={{ color: c.ink4 }}>Real-time project management for teams who ship.</p>
+        </div>
+        <div className="flex items-center gap-5">
+          <a href="https://github.com/thribhuvan003/workspace-flow" target="_blank" rel="noopener noreferrer"
+            className="text-[12px] transition-colors" style={{ color: c.ink4, fontFamily: "var(--font-mono)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = c.accent)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = c.ink4)}>
+            GitHub ↗
+          </a>
+          <span className="text-[11px]" style={{ color: c.ink4, fontFamily: "var(--font-mono)" }}>v1.0</span>
         </div>
       </div>
     </footer>
@@ -438,14 +528,17 @@ function Footer() {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const [dark, setDark] = useState(true);
+  const c = dark ? DARK : LIGHT;
+
   return (
-    <main style={{ background: "#07070f" }}>
-      <Navbar />
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <CTA />
-      <Footer />
+    <main style={{ background: c.bg, minHeight: "100vh", transition: "background 0.3s ease" }}>
+      <Navbar c={c} dark={dark} onToggle={() => setDark((d) => !d)} />
+      <Hero c={c} dark={dark} />
+      <Features c={c} />
+      <HowItWorks c={c} />
+      <CTA c={c} />
+      <Footer c={c} />
     </main>
   );
 }
