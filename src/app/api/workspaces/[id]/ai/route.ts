@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { geminiPro } from "@/lib/gemini";
+import type { Prisma } from "@prisma/client";
+
+type TaskWithAssignee = Prisma.TaskGetPayload<{
+  include: { assignee: { select: { name: true } } };
+}>;
 
 async function checkAccess(userId: string, workspaceId: string) {
   return prisma.workspaceMember.findUnique({
@@ -19,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const { type = "workspace" } = await req.json().catch(() => ({}));
 
-  const tasks = await prisma.task.findMany({
+  const tasks: TaskWithAssignee[] = await prisma.task.findMany({
     where: { workspaceId: id },
     include: { assignee: { select: { name: true } } },
     orderBy: { updatedAt: "desc" },
