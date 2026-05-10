@@ -5,7 +5,7 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/", "/login", "/register", "/api/auth", "/api/stripe/webhook"];
+  const publicPaths = ["/", "/login", "/register", "/api/auth", "/api/razorpay/webhook"];
   const isPublic = publicPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   if (!isLoggedIn && !isPublic) {

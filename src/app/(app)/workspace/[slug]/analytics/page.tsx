@@ -217,7 +217,7 @@ export default function AnalyticsPage() {
       const { summary } = await res.json();
       setAiSummary(summary);
     } catch {
-      setAiSummary("Failed to generate summary. Please check your ANTHROPIC_API_KEY and try again.");
+      setAiSummary("Failed to generate summary. Please check your GEMINI_API_KEY and try again.");
     } finally {
       setLoadingAi(false);
     }
@@ -501,7 +501,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold text-white">AI Insights</h3>
-                        <p className="text-xs text-white/30">Powered by Claude</p>
+                        <p className="text-xs text-white/30">Powered by Gemini</p>
                       </div>
                     </div>
 
@@ -545,7 +545,7 @@ export default function AnalyticsPage() {
                     <div className="text-center py-8 text-white/20">
                       <Brain className="w-8 h-8 mx-auto mb-3 text-indigo-500/30" />
                       <p className="text-sm">Click &ldquo;Generate&rdquo; to get an AI-powered {aiType} summary</p>
-                      <p className="text-xs mt-1 text-white/15">Uses Claude to analyze your workspace data</p>
+                      <p className="text-xs mt-1 text-white/15">Uses AI to analyze your workspace data</p>
                     </div>
                   )}
                 </div>

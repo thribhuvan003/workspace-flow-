@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -14,7 +14,6 @@ import {
   Shield,
   Users,
   BarChart3,
-  FileText,
   ChevronRight,
   LogOut,
   Home,
@@ -28,11 +27,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, getInitials } from "@/lib/utils";
 import type { Workspace } from "@/types";
 
-// Plan data hardcoded to avoid server-only stripe import
 const PLANS = {
   FREE: {
     name: "Free",
-    price: 0,
+    price: "₹0",
     description: "Perfect for individuals and small projects",
     features: [
       "1 workspace",
@@ -41,27 +39,43 @@ const PLANS = {
       "Basic analytics",
       "Community support",
     ],
-    limits: { workspaces: 1, members: 3, tasks: 100 },
   },
   PRO: {
     name: "Pro",
-    price: 12,
+    price: "₹999",
     description: "For growing teams that need more power",
     features: [
       "Unlimited workspaces",
       "Unlimited members",
       "Unlimited tasks",
-      "Advanced analytics",
+      "Advanced analytics & AI insights",
       "Priority support",
       "Custom labels & workflows",
-      "File attachments",
+      "Slack, GitHub & Discord integrations",
     ],
-    limits: { workspaces: Infinity, members: Infinity, tasks: Infinity },
   },
 };
 
 interface WorkspaceWithSub extends Workspace {
   role?: string;
+}
+
+declare global {
+  interface Window {
+    Razorpay: new (options: Record<string, unknown>) => { open: () => void };
+  }
+}
+
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (document.getElementById("razorpay-script")) return resolve(true);
+    const script = document.createElement("script");
+    script.id = "razorpay-script";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
 }
 
 export default function BillingPage() {
@@ -70,49 +84,82 @@ export default function BillingPage() {
   const [workspaces, setWorkspaces] = useState<WorkspaceWithSub[]>([]);
   const [loadingWorkspaces, setLoadingWorkspaces] = useState(true);
   const [upgrading, setUpgrading] = useState<string | null>(null);
-  const [managingPortal, setManagingPortal] = useState(false);
+  const [successWs, setSuccessWs] = useState<string | null>(null);
 
   const isPro = workspaces.some((w) => w.subscription?.tier === "PRO" && w.subscription?.status === "active");
 
-  useEffect(() => {
+  const fetchWorkspaces = useCallback(() => {
     fetch("/api/workspaces")
       .then((r) => (r.ok ? r.json() : []))
       .then((data: WorkspaceWithSub[]) => setWorkspaces(data))
       .finally(() => setLoadingWorkspaces(false));
   }, []);
 
+  useEffect(() => {
+    fetchWorkspaces();
+  }, [fetchWorkspaces]);
+
   const handleUpgrade = async (workspaceId: string) => {
     if (upgrading) return;
     setUpgrading(workspaceId);
+
     try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert("Failed to load Razorpay. Please check your connection.");
+        return;
+      }
+
       const res = await fetch("/api/subscriptions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workspaceId }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.url) window.location.href = data.url;
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error ?? "Failed to initiate payment");
+        return;
       }
+
+      const { orderId, amount, currency, keyId } = await res.json();
+
+      const options = {
+        key: keyId,
+        amount,
+        currency,
+        name: "WorkspaceFlow",
+        description: "Pro Plan — ₹999/month",
+        order_id: orderId,
+        prefill: {
+          email: session?.user?.email ?? "",
+          name: session?.user?.name ?? "",
+        },
+        theme: { color: "#6366f1" },
+        handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+          const verifyRes = await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              workspaceId,
+            }),
+          });
+          if (verifyRes.ok) {
+            setSuccessWs(workspaceId);
+            fetchWorkspaces();
+          } else {
+            alert("Payment verification failed. Please contact support.");
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } finally {
       setUpgrading(null);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    if (managingPortal) return;
-    setManagingPortal(true);
-    try {
-      const res = await fetch("/api/stripe/portal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.url) window.location.href = data.url;
-      }
-    } finally {
-      setManagingPortal(false);
     }
   };
 
@@ -173,6 +220,19 @@ export default function BillingPage() {
             </p>
           </div>
 
+          {/* Success banner */}
+          {successWs && (
+            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                <Crown className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <p className="font-semibold text-white">You&apos;re on Pro!</p>
+                <p className="text-sm text-white/50">Your workspace has been upgraded. All limits are now unlocked.</p>
+              </div>
+            </div>
+          )}
+
           {/* Current plan banner */}
           <div
             className={cn(
@@ -210,21 +270,18 @@ export default function BillingPage() {
               </div>
             </div>
             {isPro ? (
-              <Button
-                variant="outline"
-                onClick={handleManageSubscription}
-                loading={managingPortal}
-                className="shrink-0 gap-2"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Manage Subscription
+              <Button variant="outline" className="shrink-0 gap-2" asChild>
+                <a href="https://dashboard.razorpay.com" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4" />
+                  Razorpay Dashboard
+                </a>
               </Button>
             ) : (
               <Button
                 variant="gradient"
                 className="shrink-0 gap-2"
                 onClick={() => {
-                  const free = workspaces.find((w) => w.subscription?.tier !== "PRO");
+                  const free = workspaces.find((w) => w.subscription?.tier !== "PRO" && w.role === "OWNER");
                   if (free) handleUpgrade(free.id);
                 }}
                 loading={!!upgrading}
@@ -260,7 +317,7 @@ export default function BillingPage() {
                 <div className="mb-5">
                   <h3 className="text-lg font-semibold text-white">{PLANS.FREE.name}</h3>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-3xl font-bold text-white">$0</span>
+                    <span className="text-3xl font-bold text-white">{PLANS.FREE.price}</span>
                     <span className="text-white/40 text-sm">/month</span>
                   </div>
                   <p className="text-sm text-white/40 mt-1">{PLANS.FREE.description}</p>
@@ -302,7 +359,7 @@ export default function BillingPage() {
                 <div className="mb-5">
                   <h3 className="text-lg font-semibold text-white">{PLANS.PRO.name}</h3>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-3xl font-bold text-white">${PLANS.PRO.price}</span>
+                    <span className="text-3xl font-bold text-white">{PLANS.PRO.price}</span>
                     <span className="text-white/40 text-sm">/month</span>
                   </div>
                   <p className="text-sm text-white/40 mt-1">{PLANS.PRO.description}</p>
@@ -323,25 +380,22 @@ export default function BillingPage() {
                     variant="gradient"
                     className="w-full gap-2"
                     onClick={() => {
-                      const free = workspaces.find((w) => w.subscription?.tier !== "PRO");
+                      const free = workspaces.find((w) => w.subscription?.tier !== "PRO" && w.role === "OWNER");
                       if (free) handleUpgrade(free.id);
                     }}
                     loading={!!upgrading}
                   >
                     <Zap className="w-4 h-4" />
-                    Upgrade to Pro
+                    Upgrade to Pro — ₹999/month
                     <ArrowRight className="w-4 h-4 ml-auto" />
                   </Button>
                 )}
                 {isPro && (
-                  <Button
-                    variant="outline"
-                    className="w-full gap-2"
-                    onClick={handleManageSubscription}
-                    loading={managingPortal}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Manage Subscription
+                  <Button variant="outline" className="w-full gap-2" asChild>
+                    <a href="https://dashboard.razorpay.com" target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4" />
+                      Manage via Razorpay
+                    </a>
                   </Button>
                 )}
               </div>
@@ -371,7 +425,7 @@ export default function BillingPage() {
                 workspaces.map((ws, idx) => {
                   const subTier = ws.subscription?.tier ?? "FREE";
                   const subStatus = ws.subscription?.status;
-                  const isPro = subTier === "PRO" && subStatus === "active";
+                  const isWsPro = subTier === "PRO" && subStatus === "active";
 
                   return (
                     <div key={ws.id}>
@@ -390,8 +444,8 @@ export default function BillingPage() {
                           </p>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
-                          <Badge variant={isPro ? "default" : "secondary"}>
-                            {isPro ? (
+                          <Badge variant={isWsPro ? "default" : "secondary"}>
+                            {isWsPro ? (
                               <>
                                 <Crown className="w-2.5 h-2.5" />
                                 Pro
@@ -400,7 +454,7 @@ export default function BillingPage() {
                               "Free"
                             )}
                           </Badge>
-                          {!isPro && ws.role === "OWNER" && (
+                          {!isWsPro && ws.role === "OWNER" && (
                             <Button
                               size="sm"
                               variant="outline"
@@ -443,14 +497,14 @@ export default function BillingPage() {
                 {
                   icon: Users,
                   title: "Unlimited Members",
-                  desc: "Invite your entire organization",
+                  desc: "Invite your entire organization without limits",
                   color: "#10b981",
                   bg: "rgba(16,185,129,0.15)",
                 },
                 {
                   icon: BarChart3,
-                  title: "Advanced Analytics",
-                  desc: "Deep insights into team performance",
+                  title: "AI-Powered Analytics",
+                  desc: "Gemini AI insights and executive summaries",
                   color: "#f59e0b",
                   bg: "rgba(245,158,11,0.15)",
                 },
@@ -470,7 +524,7 @@ export default function BillingPage() {
                     className="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
                     style={{ background: bg }}
                   >
-                    <Icon className="w-4.5 h-4.5" style={{ color }} />
+                    <Icon className="w-4 h-4" style={{ color }} />
                   </div>
                   <p className="text-sm font-semibold text-white">{title}</p>
                   <p className="text-xs text-white/40 mt-1 leading-relaxed">{desc}</p>
@@ -482,7 +536,7 @@ export default function BillingPage() {
           {/* Footer note */}
           <div className="text-center pb-4">
             <p className="text-xs text-white/25">
-              Payments are processed securely by Stripe. Cancel anytime.
+              Payments are processed securely by Razorpay. Cancel anytime.
             </p>
           </div>
         </div>

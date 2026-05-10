@@ -178,9 +178,8 @@ model Doc {
 model Subscription {
   id                   String    @id @default(cuid())
   workspaceId          String    @unique
-  stripeCustomerId     String?   @unique
-  stripeSubscriptionId String?   @unique
-  stripePriceId        String?
+  razorpayOrderId      String?
+  razorpayPaymentId    String?
   status               String    @default("free")
   tier                 String    @default("FREE")
   currentPeriodEnd     DateTime?

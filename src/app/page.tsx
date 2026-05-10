@@ -106,7 +106,7 @@ const kanbanColumns = [
     color: "#f59e0b",
     accent: "rgba(245,158,11,0.10)",
     cards: [
-      { title: "Stripe subscription flow", tag: "Billing", tagColor: "#22c55e", dots: ["#6366f1"] },
+      { title: "Payment integration", tag: "Billing", tagColor: "#22c55e", dots: ["#6366f1"] },
       { title: "Analytics dashboard v1", tag: "Feature", tagColor: "#6366f1", dots: ["#a855f7", "#ec4899"] },
       { title: "Docs editor improvements", tag: "Feature", tagColor: "#6366f1", dots: ["#f59e0b"] },
     ],
@@ -332,8 +332,8 @@ const features = [
   },
   {
     icon: CreditCard,
-    title: "Stripe Billing",
-    description: "Transparent usage-based pricing with instant plan upgrades, invoices, and team billing.",
+    title: "Simple Billing",
+    description: "Transparent pricing with instant plan upgrades, payment history, and team billing.",
     color: "#06b6d4",
     bg: "rgba(6,182,212,0.08)",
   },
@@ -578,7 +578,7 @@ const plans = [
     price: "$12",
     period: "/month",
     description: "Everything you need to run a growing team at full speed.",
-    features: ["Unlimited workspaces", "Unlimited members", "Unlimited tasks", "Analytics dashboard", "Live docs & chat", "Priority support", "Stripe billing"],
+    features: ["Unlimited workspaces", "Unlimited members", "Unlimited tasks", "AI-powered analytics", "Live docs & chat", "Priority support", "Razorpay billing"],
     cta: "Start free trial",
     href: "/register?plan=pro",
     highlighted: true,

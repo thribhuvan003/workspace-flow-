@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     });
   } catch (error) {
-    console.error("Subscription error:", error);
-    return NextResponse.json({ error: "Failed to create payment order" }, { status: 500 });
+    console.error("Razorpay order error:", error);
+    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
   }
 }

@@ -1,114 +1,161 @@
 # WorkspaceFlow
 
-A real-time project management platform for teams who want to move fast without losing track of anything. Built as a production-grade SaaS — not a tutorial app.
+A production-grade SaaS project management platform — built to be résumé-worthy, not tutorial-level.
 
-Think Linear's speed, Notion's flexibility, and Plane's open design — in one dark-mode workspace that actually works.
-
----
-
-## What it does
-
-You create a workspace, invite your team, and get a fully functional project management environment:
-
-- Drag tasks across a Kanban board that updates live for every teammate
-- Write docs that sync in real time as you type
-- Comment on tasks with live typing indicators — you can see who's writing
-- Invite members by email, manage roles, remove people
-- Connect Slack, GitHub, or Discord to pipe task activity into your tools
-- Ask Claude to summarize your entire workspace, generate a standup, or prioritize your backlog
-- Get AI-written task descriptions with one click in the task detail panel
-- Use the Cmd+K command palette to jump anywhere instantly
-- Track progress in an analytics dashboard with charts and a 30-day history
-- Upgrade to Pro with Stripe — billing, webhooks, customer portal all wired up
+Real-time Kanban boards, collaborative docs, AI-powered insights, team management, and payment billing — all in one dark-mode workspace. The kind of project that actually gets you the interview.
 
 ---
 
-## Tech stack
+## Live Features
 
-| What | How |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript — strict mode throughout |
-| Database | PostgreSQL via Prisma v7 |
-| Auth | NextAuth v5 — Google, GitHub, email+password |
-| Real-time | Socket.io v4 on a custom Node server |
-| AI | Anthropic Claude (Opus for summaries, Haiku for task descriptions) |
-| Payments | Stripe — Checkout, webhooks, customer portal |
-| Styling | Tailwind CSS v4 |
-| Drag and drop | @hello-pangea/dnd |
-| Charts | Recharts |
-| Animations | Framer Motion |
-| State | Zustand |
-| Validation | Zod v4 |
+- **Kanban board** with drag-and-drop, live sync, and task assignments across all teammates simultaneously
+- **Collaborative docs** that update character-by-character in real time as you type
+- **Task comments** with live typing indicators — you can see exactly who's writing before they hit send
+- **Team management** — invite by email, set roles (Owner / Member / Guest), remove people
+- **Third-party integrations** — Slack, GitHub, Discord for piping task activity into your existing tools
+- **AI workspace insights** — ask Gemini to summarize your entire workspace, generate a standup, or prioritize your backlog
+- **AI task descriptions** — one click generates a professional task description from just the title
+- **Cmd+K command palette** — keyboard-first navigation to anywhere in the app instantly
+- **Analytics dashboard** — area charts, pie charts, 30-day velocity, completion rates
+- **Payments with Razorpay** — Pro plan billing, webhook handling, and subscription state management
+- **Multi-workspace support** — one account, many workspaces, each isolated
 
 ---
 
-## Project structure
+## Tech Stack
+
+| Layer | Technology | Why this choice |
+|---|---|---|
+| Framework | Next.js 16 (App Router) | RSCs reduce client JS, built-in routing, middleware |
+| Language | TypeScript (strict) | Catches entire categories of bugs at compile time |
+| Database | PostgreSQL + Prisma v7 | Type-safe queries; schema-as-code prevents drift |
+| Auth | NextAuth v5 | Battle-tested; supports Google, GitHub, and email |
+| Real-time | Socket.io v4 | Reliable WebSocket abstraction with rooms and reconnect |
+| AI | Google Gemini (Pro + Flash) | Pro for detailed summaries, Flash for fast task descriptions |
+| Payments | Razorpay | India-first payment gateway with solid webhook support |
+| Styling | Tailwind CSS v4 | Zero-runtime CSS; new `@theme` API eliminates the config file |
+| Animations | Framer Motion | Declarative variants keep animation logic readable |
+| Drag & Drop | @hello-pangea/dnd | Accessible, well-maintained fork of react-beautiful-dnd |
+| Charts | Recharts | Composable chart primitives built on top of D3 |
+| State | Zustand | Minimal boilerplate for global client state |
+| Validation | Zod v4 | Schema validation at API boundaries; shared types between layers |
+
+---
+
+## Architecture Decisions
+
+### Why a custom Node server instead of Vercel?
+
+Next.js App Router doesn't support persistent WebSocket connections — serverless functions die after each request. The custom `server.ts` wraps Next.js's request handler with a plain Node HTTP server, then attaches Socket.io on top of the same port. This means one process handles both HTTP and WebSocket traffic with zero extra infrastructure.
+
+### How real-time sync works
+
+When a user opens a workspace, their client joins a Socket.io room scoped to `workspaceId`. Every mutation (moving a task, adding a comment, editing a doc) emits an event to that room server-side. All connected clients in the same workspace receive the update within milliseconds without polling.
+
+Events: `task-moved`, `task-created`, `comment-added`, `doc-updated`, `typing-start`, `typing-stop`
+
+### Database connection with Prisma v7
+
+Prisma v7 removed the `url` field from datasource blocks. The connection now goes through a driver adapter:
+
+```typescript
+// src/lib/prisma.ts
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+export const prisma = new PrismaClient({ adapter });
+```
+
+This pattern avoids Prisma spinning up a separate connection pool and gives direct access to the underlying `pg` pool when needed.
+
+### Multi-tenancy and security
+
+Every single API route verifies workspace membership before touching any data. The pattern is consistent:
+
+```typescript
+const access = await prisma.workspaceMember.findUnique({
+  where: { userId_workspaceId: { userId: session.user.id, workspaceId: id } },
+});
+if (!access) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+```
+
+Owner-only operations (managing integrations, removing members, payment actions) have an additional role check. There are no cross-tenant data leaks by design — every query is scoped to a specific `workspaceId`.
+
+### AI integration
+
+Two separate Gemini models handle different latency requirements:
+
+- **Workspace summaries** use `gemini-1.5-pro` — higher quality output for executive reports, standups, and backlog analysis. Results are persisted in the database so teams have a history.
+- **Task descriptions** use `gemini-1.5-flash` — fast, cheap, single-pass generation from just a task title and priority. Response time under 1s in practice.
+
+### Payment flow (Razorpay)
+
+The billing flow is a three-step process:
+
+1. Backend creates a Razorpay order via server-side SDK call
+2. Frontend loads the Razorpay checkout script and opens the modal with the order ID
+3. On payment success, frontend sends `{ orderId, paymentId, signature }` to `/api/razorpay/verify` — the backend computes `HMAC-SHA256(orderId|paymentId)` and compares it against the signature before updating the subscription
+
+Webhooks at `/api/razorpay/webhook` handle async events like `payment.captured` and `subscription.cancelled` to keep database state consistent with Razorpay's records.
+
+---
+
+## Project Structure
 
 ```
 workspace-flow/
 ├── prisma/
-│   └── schema.prisma              # Database schema — all models
+│   └── schema.prisma              # Full DB schema — 12 models
 ├── server.ts                      # Custom Node server (Next.js + Socket.io)
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/                # Login and register pages
-│   │   │   ├── login/
-│   │   │   └── register/
-│   │   ├── (app)/                 # Authenticated app shell
+│   │   ├── (auth)/                # Login + register pages
+│   │   ├── (app)/                 # Authenticated shell
 │   │   │   ├── dashboard/         # Workspace list + create flow
-│   │   │   └── workspace/[slug]/  # Everything inside a workspace
+│   │   │   ├── billing/           # Razorpay billing + plan comparison
+│   │   │   └── workspace/[slug]/  # The main workspace
 │   │   │       ├── page.tsx       # Kanban board
-│   │   │       ├── docs/          # Document editor
+│   │   │       ├── docs/          # Real-time document editor
 │   │   │       ├── members/       # Team management
 │   │   │       ├── analytics/     # Charts + AI insights
 │   │   │       ├── integrations/  # Slack · GitHub · Discord
-│   │   │       └── settings/      # Workspace config
-│   │   ├── api/
-│   │   │   ├── auth/              # NextAuth handlers + register
-│   │   │   ├── workspaces/[id]/   # Tasks · Docs · Members · Invite
-│   │   │   │   ├── tasks/
-│   │   │   │   ├── docs/
-│   │   │   │   ├── members/
-│   │   │   │   ├── invite/
-│   │   │   │   ├── integrations/
-│   │   │   │   ├── analytics/
-│   │   │   │   ├── activity/
-│   │   │   │   └── ai/            # Workspace summary + task description
-│   │   │   ├── tasks/[id]/        # Task patch + comments
-│   │   │   └── stripe/            # Checkout · Webhook · Portal
-│   │   └── globals.css
+│   │   │       └── settings/      # Workspace config + danger zone
+│   │   └── api/
+│   │       ├── auth/              # NextAuth handlers + email register
+│   │       ├── workspaces/[id]/   # Tasks · Docs · Members · Invite · AI
+│   │       ├── tasks/[id]/        # Task PATCH + comments
+│   │       ├── razorpay/          # order · verify · webhook
+│   │       └── subscriptions/     # Create payment order
 │   ├── components/
 │   │   ├── ui/                    # Button, Input, Dialog, Badge, etc.
 │   │   ├── layout/
 │   │   │   └── workspace-sidebar.tsx
 │   │   ├── tasks/
 │   │   │   └── task-detail-modal.tsx
-│   │   └── command-palette.tsx
+│   │   └── command-palette.tsx    # Cmd+K with keyboard navigation
 │   ├── hooks/
 │   │   └── use-socket.ts
 │   ├── lib/
 │   │   ├── auth.ts
 │   │   ├── prisma.ts
-│   │   ├── stripe.ts
-│   │   ├── anthropic.ts
+│   │   ├── gemini.ts              # Gemini Pro + Flash clients
+│   │   ├── razorpay.ts            # Razorpay client + PLANS config
 │   │   └── utils.ts
 │   ├── store/                     # Zustand global state
-│   └── types/                     # Shared TypeScript types
-└── .env                           # See setup below
+│   └── types/                     # Shared TypeScript interfaces
+└── .env
 ```
 
 ---
 
-## Getting started
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 20+
-- PostgreSQL 15+ (local or hosted — Supabase, Neon, Railway all work)
-- A Stripe account
-- An Anthropic API key for the AI features
-- A Google or GitHub OAuth app (or both)
+- PostgreSQL 15+ (local, Supabase, Neon, or Railway all work)
+- A Razorpay account (for billing features)
+- A Google AI Studio API key (for AI features)
+- Google and/or GitHub OAuth app credentials
 
 ### 1. Clone and install
 
@@ -118,15 +165,15 @@ cd workspace-flow
 npm install
 ```
 
-### 2. Set up environment variables
+### 2. Environment variables
 
-Create a `.env` file in the root:
+Copy `.env.example` to `.env` and fill in your values:
 
 ```env
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/workspaceflow"
 
-# NextAuth — generate secret with: openssl rand -base64 32
+# NextAuth — generate with: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-here"
 
@@ -138,17 +185,17 @@ GOOGLE_CLIENT_SECRET=""
 GITHUB_CLIENT_ID=""
 GITHUB_CLIENT_SECRET=""
 
-# Stripe — dashboard.stripe.com
-STRIPE_SECRET_KEY="sk_test_..."
-STRIPE_WEBHOOK_SECRET="whsec_..."
-STRIPE_PRO_PRICE_ID="price_..."
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+# Razorpay — dashboard.razorpay.com
+RAZORPAY_KEY_ID="rzp_test_..."
+RAZORPAY_KEY_SECRET="..."
+RAZORPAY_WEBHOOK_SECRET="..."
 
-# Anthropic — console.anthropic.com
-ANTHROPIC_API_KEY="sk-ant-..."
+# Google Gemini — aistudio.google.com
+GEMINI_API_KEY="..."
 
 # App URL
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_RAZORPAY_KEY_ID="rzp_test_..."
 ```
 
 ### 3. Set up the database
@@ -157,106 +204,88 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 npm run db:push
 ```
 
-This runs Prisma's schema push against your PostgreSQL database and generates the client. No migrations needed for a fresh setup.
+Prisma pushes the schema to your PostgreSQL database and generates the client. No migrations needed for a fresh setup.
 
-### 4. Run it
+### 4. Run the development server
 
 ```bash
 npm run dev
 ```
 
-This starts the custom Socket.io server on top of Next.js. Open [http://localhost:3000](http://localhost:3000).
+Opens [http://localhost:3000](http://localhost:3000). The custom Socket.io server starts alongside Next.js on the same port.
 
 ---
 
-## How the real-time layer works
+## Real-time Architecture Deep Dive
 
-Next.js App Router doesn't support WebSockets natively, so there's a custom `server.ts` that wraps Next.js's request handler with a plain Node HTTP server and Socket.io on top.
+The WebSocket layer is built on Socket.io rooms, not broadcasts. When a client opens `/workspace/my-project`, the client emits `join-workspace` with the workspace ID. The server adds that socket to a room keyed by the ID.
 
-When a user opens a workspace, the client joins a Socket.io room keyed to that workspace ID. Any action — moving a task, adding a comment, editing a doc — emits an event to that room. Every other connected client in the workspace receives it instantly.
+When any client mutates state (drag a task, post a comment), the handler:
+1. Writes the change to PostgreSQL
+2. Emits the event to the workspace room: `io.to(workspaceId).emit("task-moved", data)`
+3. Returns the HTTP 200
 
-Events: `task-moved`, `task-created`, `comment-added`, `doc-updated`, `typing-start`, `typing-stop`
-
----
-
-## How the database connection works
-
-Prisma v7 dropped the `url` field from datasource blocks in `schema.prisma`. The connection now goes through a driver adapter:
-
-```typescript
-// src/lib/prisma.ts
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-export const prisma = new PrismaClient({ adapter });
-```
+All other connected clients receive the event and update their local state — no polling, no stale reads. The Socket.io `sticky sessions` concern doesn't apply here because the entire app runs on one Node process.
 
 ---
 
-## Multi-tenancy and security
+## Security Model
 
-Every single API route checks that the requesting user is a member of the workspace before touching any data. Owner-only operations (managing integrations, removing members, changing settings) have an additional role check.
-
-There are no shared database queries. Every query is scoped to a specific `workspaceId`. Guests can read but not write. Members can create and update. Owners control everything.
-
----
-
-## AI features
-
-The Anthropic integration lives in `src/lib/anthropic.ts` and is used in two places:
-
-**Workspace summary** (`/api/workspaces/[id]/ai`) — takes your task list, activity log, member count, and doc titles, builds a prompt, and asks Claude Opus to write an executive summary, a standup update, or a backlog prioritization. The result is saved to the database so you have a history.
-
-**Task description** (`/api/workspaces/[id]/ai/task`) — takes the task title, priority, and labels and asks Claude Haiku to write a concise, professional description. Haiku is used here because it's fast and cheap for this kind of short generation.
-
----
-
-## Stripe setup
-
-For local development, forward Stripe webhooks using the Stripe CLI:
-
-```bash
-stripe listen --forward-to localhost:3000/api/stripe/webhook
-```
-
-The webhook handler processes `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted` to keep the `Subscription` table in sync.
+| Layer | Protection |
+|---|---|
+| API routes | Session check on every request via `auth()` |
+| Workspace data | Membership lookup before any query |
+| Owner operations | Role check (`role === "OWNER"`) on top of membership |
+| Payment verification | HMAC-SHA256 signature validation before DB update |
+| Webhook handlers | Signature verification before processing |
+| Passwords | bcrypt with salt rounds |
 
 ---
 
 ## Deployment
 
-The app runs on any Node.js host — Railway, Render, Fly.io, or a plain VPS. Vercel is not ideal because Socket.io needs a persistent server, not serverless functions.
+Runs on any Node.js host — Railway, Render, Fly.io, or a plain VPS. Not suitable for Vercel because Socket.io needs a persistent server.
 
 ```bash
 npm run build
 npm start
 ```
 
-Set all environment variables in your host's dashboard. Make sure `NEXTAUTH_URL` matches your production domain.
+Set all environment variables on your host. Make sure `NEXTAUTH_URL` matches your production domain exactly.
+
+### Razorpay webhooks setup
+
+In the Razorpay dashboard, add a webhook pointing to:
+```
+https://your-domain.com/api/razorpay/webhook
+```
+
+Enable these events: `payment.captured`, `subscription.cancelled`
 
 ---
 
 ## Scripts
 
 ```bash
-npm run dev          # Start dev server (Next.js + Socket.io)
+npm run dev          # Dev server (Next.js + Socket.io)
 npm run build        # Production build
-npm run start        # Start production server
+npm run start        # Production server
 npm run db:push      # Push Prisma schema to database
-npm run db:studio    # Open Prisma Studio (visual DB browser)
-npm run lint         # Run ESLint
+npm run db:studio    # Open Prisma Studio
+npm run lint         # ESLint
 ```
 
 ---
 
 ## What's next
 
-A few things that could make this even better but weren't in scope for this build:
+Things deliberately left out of scope to keep the build focused:
 
-- Email notifications when you're assigned a task or mentioned in a comment
+- Email notifications for task assignments and @mentions
 - File attachments on tasks and docs
-- Keyboard shortcuts beyond Cmd+K (j/k navigation on the board, etc.)
-- TabMind integration — auto-create tasks from your browser tabs
+- Mobile app (the web app is responsive but a native app would be better on mobile)
+- Advanced RBAC — custom role definitions per workspace
 
 ---
 
-Built with Next.js, Prisma, Socket.io, and Anthropic Claude.
+Built with Next.js, PostgreSQL, Socket.io, Google Gemini, and Razorpay.

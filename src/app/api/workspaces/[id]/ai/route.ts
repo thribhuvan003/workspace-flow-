@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { anthropic } from "@/lib/anthropic";
+import { geminiPro } from "@/lib/gemini";
 
 async function checkAccess(userId: string, workspaceId: string) {
   return prisma.workspaceMember.findUnique({
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let prompt = "";
 
   if (type === "workspace") {
-    prompt = `You are an expert project manager analyzing a workspace called in WorkspaceFlow. Generate a concise, insightful summary for the team.
+    prompt = `You are an expert project manager analyzing a workspace in WorkspaceFlow. Generate a concise, insightful summary for the team.
 
 Workspace data:
 - ${members.length} team member(s)
@@ -118,20 +118,14 @@ Use markdown. Be specific and actionable.`;
   }
 
   try {
-    const message = await anthropic.messages.create({
-      model: "claude-opus-4-7",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content[0];
-    if (content.type !== "text") throw new Error("Unexpected response type");
+    const result = await geminiPro.generateContent(prompt);
+    const text = result.response.text();
 
     await prisma.aiSummary.create({
-      data: { workspaceId: id, type, content: content.text },
+      data: { workspaceId: id, type, content: text },
     });
 
-    return NextResponse.json({ summary: content.text, type });
+    return NextResponse.json({ summary: text, type });
   } catch (err) {
     console.error("AI summary error:", err);
     return NextResponse.json({ error: "AI generation failed" }, { status: 500 });

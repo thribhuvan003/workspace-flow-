@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { anthropic } from "@/lib/anthropic";
+import { geminiFlash } from "@/lib/gemini";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -30,16 +30,10 @@ Write a 2-4 sentence description that includes:
 Keep it professional and actionable. Do not use bullet points or markdown headers — write as clean prose. Do not repeat the task title.`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 256,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const result = await geminiFlash.generateContent(prompt);
+    const text = result.response.text();
 
-    const content = message.content[0];
-    if (content.type !== "text") throw new Error("Unexpected type");
-
-    return NextResponse.json({ description: content.text.trim() });
+    return NextResponse.json({ description: text.trim() });
   } catch (err) {
     console.error("AI task description error:", err);
     return NextResponse.json({ error: "AI generation failed" }, { status: 500 });
