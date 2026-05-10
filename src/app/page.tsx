@@ -12,7 +12,6 @@ import {
   FileText,
   LayoutGrid,
   CreditCard,
-  Star,
   ArrowRight,
   Play,
 } from "lucide-react";
@@ -206,7 +205,7 @@ function HeroSection() {
           animate="visible"
           className="inline-flex items-center gap-2 rounded-full border border-[#6366f1]/30 bg-[#6366f1]/10 px-4 py-1.5 text-sm text-[#a5b4fc] mb-8">
           <Zap size={13} className="text-[#6366f1]" />
-          Trusted by 10,000+ teams worldwide
+          Real-time · AI-powered · Open source
         </motion.div>
 
         {/* Headline */}
@@ -467,53 +466,37 @@ function HowItWorksSection() {
   );
 }
 
-// ─── Testimonials ──────────────────────────────────────────────────────────────
+// ─── Tech Stack Section ────────────────────────────────────────────────────────
 
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    role: "Head of Product, Luminary",
-    initials: "SC",
-    avatarColor: "#6366f1",
-    quote: "WorkspaceFlow replaced four tools we were paying for. Our team's velocity doubled in the first month. The Kanban + docs combo is genuinely brilliant.",
-    stars: 5,
-  },
-  {
-    name: "Marcus Rivera",
-    role: "CTO, Buildfast",
-    initials: "MR",
-    avatarColor: "#a855f7",
-    quote: "The real-time sync is flawless. I used to live in Slack just to know what everyone was working on. Now the board tells the story automatically.",
-    stars: 5,
-  },
-  {
-    name: "Priya Nair",
-    role: "Engineering Manager, Codestack",
-    initials: "PN",
-    avatarColor: "#ec4899",
-    quote: "Setup was incredibly easy. We migrated from Notion and Trello in an afternoon. The analytics alone are worth the price — visibility we never had before.",
-    stars: 5,
-  },
+const techStack = [
+  { name: "Next.js 16", desc: "App Router + custom Node server" },
+  { name: "TypeScript", desc: "Strict mode throughout" },
+  { name: "PostgreSQL", desc: "Prisma v7 with driver adapter" },
+  { name: "Socket.io v4", desc: "Real-time workspace rooms" },
+  { name: "NextAuth v5", desc: "Google · GitHub · Email" },
+  { name: "Gemini AI", desc: "Summaries + task descriptions" },
+  { name: "Razorpay", desc: "INR billing + webhooks" },
+  { name: "Tailwind CSS v4", desc: "Zero-config @theme API" },
 ];
 
-function TestimonialsSection() {
+function TechSection() {
   return (
-    <section className="py-28 px-6">
+    <section className="py-20 px-6 border-t border-[#1e1e2e]">
       <div className="max-w-7xl mx-auto">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="text-center mb-16">
+          className="text-center mb-12">
           <span className="inline-block text-[13px] font-semibold tracking-widest uppercase text-[#6366f1] mb-4">
-            Loved by teams
+            Under the hood
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight">
-            Don't take our word for it
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+            Built with the right tools
           </h2>
-          <p className="text-[#a0a0b0] text-lg max-w-xl mx-auto">
-            Thousands of teams have ditched their tool stack for WorkspaceFlow.
+          <p className="text-[#a0a0b0] text-base max-w-lg mx-auto">
+            No filler dependencies. Every choice was made for a specific reason.
           </p>
         </motion.div>
 
@@ -522,36 +505,14 @@ function TestimonialsSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {techStack.map((t) => (
             <motion.div
               key={t.name}
               variants={fadeUp}
-              className="rounded-2xl p-7 border border-[#2a2a3e] hover:border-[#3a3a52] transition-all duration-300 flex flex-col"
-              style={{ background: "#111118" }}>
-              {/* Stars */}
-              <div className="flex gap-1 mb-5">
-                {Array.from({ length: t.stars }).map((_, j) => (
-                  <Star key={j} size={15} className="fill-[#f59e0b] text-[#f59e0b]" />
-                ))}
-              </div>
-
-              {/* Quote */}
-              <p className="text-[#c0c0d0] text-sm leading-relaxed flex-1 mb-6">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3 pt-5 border-t border-[#1e1e2e]">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold text-white flex-shrink-0"
-                  style={{ background: `linear-gradient(135deg, ${t.avatarColor}, ${t.avatarColor}99)` }}>
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="text-white text-[14px] font-semibold">{t.name}</p>
-                  <p className="text-[#6b6b80] text-[12px]">{t.role}</p>
-                </div>
-              </div>
+              className="rounded-xl border border-[#2a2a3e] bg-[#111118] p-4 hover:border-[#3a3a52] transition-colors">
+              <p className="text-white text-sm font-semibold mb-1">{t.name}</p>
+              <p className="text-[#6b6b80] text-xs leading-relaxed">{t.desc}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -565,34 +526,25 @@ function TestimonialsSection() {
 const plans = [
   {
     name: "Free",
-    price: "$0",
+    price: "₹0",
     period: "forever",
-    description: "Perfect for individuals and small teams getting started.",
-    features: ["1 workspace", "Up to 3 members", "100 tasks per board", "Basic Kanban board", "Community support"],
+    description: "For individuals and small teams getting started.",
+    features: ["1 workspace", "Up to 3 members", "100 tasks", "Basic Kanban board", "Community support"],
     cta: "Get started free",
     href: "/register",
     highlighted: false,
+    badge: null,
   },
   {
     name: "Pro",
-    price: "$12",
+    price: "₹999",
     period: "/month",
-    description: "Everything you need to run a growing team at full speed.",
-    features: ["Unlimited workspaces", "Unlimited members", "Unlimited tasks", "AI-powered analytics", "Live docs & chat", "Priority support", "Razorpay billing"],
-    cta: "Start free trial",
-    href: "/register?plan=pro",
+    description: "For teams that need real power — no artificial limits.",
+    features: ["Unlimited workspaces", "Unlimited members", "Unlimited tasks", "AI-powered analytics", "Live docs & real-time sync", "Slack, GitHub & Discord", "Priority support"],
+    cta: "Upgrade to Pro",
+    href: "/register",
     highlighted: true,
     badge: "Most Popular",
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "pricing",
-    description: "Dedicated infrastructure, SLA, and white-glove onboarding.",
-    features: ["Everything in Pro", "SSO / SAML", "Custom roles & permissions", "Audit logs", "Dedicated CSM", "99.99% uptime SLA"],
-    cta: "Contact sales",
-    href: "/contact",
-    highlighted: false,
   },
 ];
 
@@ -627,7 +579,7 @@ function PricingSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-3xl mx-auto">
           {plans.map((plan) => (
             <motion.div
               key={plan.name}
@@ -726,7 +678,7 @@ function CTABanner() {
               Start for free today
             </h2>
             <p className="text-[#c0c0d0] text-lg mb-8 max-w-md mx-auto">
-              Join 10,000+ teams who have already switched. No credit card required.
+              Free forever on the starter plan. Upgrade when your team grows. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/register"
@@ -817,7 +769,7 @@ export default function LandingPage() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
-      <TestimonialsSection />
+      <TechSection />
       <PricingSection />
       <CTABanner />
       <Footer />
