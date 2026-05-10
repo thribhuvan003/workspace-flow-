@@ -57,7 +57,8 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
       transition={{ ...SPRING, delay: 0.05 }}
     >
       {/* Brand */}
-      <div
+      <Link
+        href="/dashboard"
         className="flex items-center gap-2 px-4 h-12 shrink-0"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
       >
@@ -65,7 +66,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
         <span className="font-bold text-white text-[13px]" style={{ letterSpacing: "-0.02em" }}>
           WorkspaceFlow
         </span>
-      </div>
+      </Link>
 
       {/* Workspace switcher */}
       <div className="px-3 pt-3 pb-1 shrink-0">
