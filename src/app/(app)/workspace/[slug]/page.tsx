@@ -39,10 +39,10 @@ const COLUMNS: {
   color: string;
   lightColor: string;
 }[] = [
-  { id: "TODO",        label: "To Do",       color: "#5a5a7a", lightColor: "rgba(90,90,122,0.07)"   },
-  { id: "IN_PROGRESS", label: "In Progress", color: "#ff5c00", lightColor: "rgba(255,92,0,0.08)"  },
-  { id: "REVIEW",      label: "Review",      color: "#f59e0b", lightColor: "rgba(245,158,11,0.10)"  },
-  { id: "DONE",        label: "Done",        color: "#22c55e", lightColor: "rgba(34,197,94,0.07)"   },
+  { id: "TODO",        label: "To Do",       color: "#6b7280", lightColor: "rgba(107,114,128,0.07)" },
+  { id: "IN_PROGRESS", label: "In Progress", color: "#ff5c00", lightColor: "rgba(255,92,0,0.08)"   },
+  { id: "REVIEW",      label: "Review",      color: "#f59e0b", lightColor: "rgba(245,158,11,0.10)" },
+  { id: "DONE",        label: "Done",        color: "#10b981", lightColor: "rgba(16,185,129,0.07)" },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ function QuickAddForm({
   };
 
   return (
-    <div className="rounded-xl border border-[#ff5c00]/30 bg-[#0f0f1c] p-2.5 shadow-lg shadow-[#ff5c00]/08">
+    <div className="rounded-xl border border-[#ff5c00]/30 bg-[#0d0d14] p-2.5 shadow-lg shadow-[#ff5c00]/08">
       <input
         ref={inputRef}
         value={title}
