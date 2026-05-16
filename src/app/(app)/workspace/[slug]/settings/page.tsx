@@ -27,16 +27,16 @@ import { cn } from "@/lib/utils";
 import type { Workspace } from "@/types";
 
 const WORKSPACE_COLORS = [
-  { value: "#ff5c00", label: "Indigo" },
-  { value: "#ff5c00", label: "Violet" },
+  { value: "#ff5c00", label: "Orange" },
+  { value: "#8b5cf6", label: "Violet" },
   { value: "#ec4899", label: "Pink" },
   { value: "#f59e0b", label: "Amber" },
   { value: "#10b981", label: "Emerald" },
   { value: "#3b82f6", label: "Blue" },
   { value: "#ef4444", label: "Red" },
   { value: "#14b8a6", label: "Teal" },
-  { value: "#f97316", label: "Orange" },
-  { value: "#ff5c00", label: "Purple" },
+  { value: "#f97316", label: "Orange Light" },
+  { value: "#6366f1", label: "Indigo" },
 ];
 
 export default function SettingsPage() {

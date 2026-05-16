@@ -27,8 +27,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useSocket } from "@/hooks/use-socket";
+import { TaskDetailModal } from "@/components/tasks/task-detail-modal";
 import { cn, getInitials, getLabelColor, PRIORITY_CONFIG } from "@/lib/utils";
-import type { Task, Workspace, TaskStatus, SocketUser } from "@/types";
+import type { Task, Workspace, TaskStatus, SocketUser, WorkspaceMember } from "@/types";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -481,9 +482,12 @@ export default function WorkspaceBoardPage() {
   const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<SocketUser[]>([]);
+  const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [loadingWs, setLoadingWs] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
 
   // Fetch workspace by slug
   useEffect(() => {
@@ -506,6 +510,17 @@ export default function WorkspaceBoardPage() {
       }
     })();
   }, [authStatus, slug]);
+
+  // Fetch members
+  useEffect(() => {
+    if (!workspace?.id) return;
+    (async () => {
+      try {
+        const res = await fetch(`/api/workspaces/${workspace.id}/members`);
+        if (res.ok) setMembers(await res.json());
+      } catch {}
+    })();
+  }, [workspace?.id]);
 
   // Fetch tasks
   useEffect(() => {
@@ -623,9 +638,14 @@ export default function WorkspaceBoardPage() {
   );
 
   const handleTaskClick = (task: Task) => {
-    // TODO: open TaskDetailModal
-    console.log("Task clicked:", task);
+    setSelectedTask(task);
+    setTaskModalOpen(true);
   };
+
+  const handleTaskUpdated = useCallback((updatedTask: Task) => {
+    setTasks((prev) => prev.map((t) => t.id === updatedTask.id ? updatedTask : t));
+    setSelectedTask(updatedTask);
+  }, []);
 
   const handleTaskAdded = useCallback(
     (task: Task) => {
@@ -737,6 +757,21 @@ export default function WorkspaceBoardPage() {
           </DragDropContext>
         )}
       </div>
+
+      {/* Task detail modal */}
+      {selectedTask && workspace && (
+        <TaskDetailModal
+          task={selectedTask}
+          workspaceId={workspace.id}
+          members={members}
+          isOpen={taskModalOpen}
+          onClose={() => {
+            setTaskModalOpen(false);
+            setSelectedTask(null);
+          }}
+          onTaskUpdate={handleTaskUpdated}
+        />
+      )}
     </div>
   );
 }

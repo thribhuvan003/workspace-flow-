@@ -48,7 +48,7 @@ export function formatRelativeTime(date: Date | string): string {
 
 export const WORKSPACE_COLORS = [
   "#ff5c00",
-  "#ff5c00",
+  "#8b5cf6",
   "#ec4899",
   "#f59e0b",
   "#10b981",
@@ -78,7 +78,7 @@ export const LABEL_COLORS = [
   { name: "Backend", color: "#f59e0b", bg: "rgba(245,158,11,0.15)" },
   { name: "Frontend", color: "#3b82f6", bg: "rgba(59,130,246,0.15)" },
   { name: "Docs", color: "#10b981", bg: "rgba(16,185,129,0.15)" },
-  { name: "Testing", color: "#ff5c00", bg: "rgba(139,92,246,0.15)" },
+  { name: "Testing", color: "#8b5cf6", bg: "rgba(139,92,246,0.15)" },
   { name: "Urgent", color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
 ];
 

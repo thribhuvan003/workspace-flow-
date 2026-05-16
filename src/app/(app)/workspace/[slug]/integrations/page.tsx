@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import {
-  GitBranch, MessageSquare, Zap, CheckCircle2, XCircle,
+  GitBranch, Plug, Zap, CheckCircle2, XCircle,
   ExternalLink, RefreshCw, Trash2, Eye, EyeOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -380,15 +380,24 @@ export default function IntegrationsPage() {
   }
 
   return (
-    <div className="flex-1 p-8 overflow-y-auto">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-white">Integrations</h1>
-          <p className="text-white/40 mt-1 text-sm">
-            Connect your workspace to third-party tools. Only workspace owners can manage integrations.
-          </p>
+    <div className="flex-1 overflow-hidden flex flex-col">
+      {/* Header */}
+      <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#cc3d00]/15 flex items-center justify-center">
+            <Plug className="w-5 h-5 text-[#ff5c00]" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-white">Integrations</h1>
+            <p className="text-sm text-white/40 mt-0.5">
+              Connect your workspace to third-party tools
+            </p>
+          </div>
         </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-8">
+      <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Stats bar */}
         <div className="grid grid-cols-3 gap-4">
@@ -432,6 +441,7 @@ export default function IntegrationsPage() {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

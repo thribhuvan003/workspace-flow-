@@ -11,6 +11,8 @@ import {
   Clock,
   FilePlus,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -257,11 +259,9 @@ export default function DocsPage() {
 
                   {/* Content */}
                   {previewMode ? (
-                    <div className="prose prose-invert max-w-none text-white/70">
+                    <div className="prose prose-invert max-w-none text-white/70 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white/90 [&_strong]:text-white/90 [&_a]:text-[#ff5c00] [&_code]:bg-white/10 [&_code]:text-[#ff8a40] [&_pre]:bg-[#0d0d14] [&_blockquote]:border-[#ff5c00]/30">
                       {contentValue ? (
-                        <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed text-white/70">
-                          {contentValue}
-                        </pre>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{contentValue}</ReactMarkdown>
                       ) : (
                         <p className="text-white/25 italic">Start writing something…</p>
                       )}

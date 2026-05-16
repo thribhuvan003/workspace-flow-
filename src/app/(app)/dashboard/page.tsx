@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
@@ -474,7 +474,7 @@ function WorkspaceCardSkeleton() {
 
 // ─── Dashboard Page ───────────────────────────────────────────────────────────
 
-export default function DashboardPage() {
+function DashboardContent() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const [workspaces, setWorkspaces] = useState<(Workspace & { role?: string })[]>([]);
@@ -631,5 +631,13 @@ export default function DashboardPage() {
         onCreated={handleCreated}
       />
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense>
+      <DashboardContent />
+    </Suspense>
   );
 }
