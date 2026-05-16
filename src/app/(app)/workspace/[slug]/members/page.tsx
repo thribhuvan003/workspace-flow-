@@ -157,7 +157,14 @@ export default function MembersPage() {
       });
       if (res.ok) {
         const invite = await res.json();
-        setPendingInvites((prev) => [invite, ...prev]);
+        // If the email belongs to an existing user, they're added immediately
+        // and the route returns { immediate: true } instead of an invite object.
+        if (invite.immediate) {
+          await loadMembers();
+        } else if (invite.id) {
+          // Replace any existing pending invite for this email, then prepend.
+          setPendingInvites((prev) => [invite, ...prev.filter((p) => p.email !== invite.email)]);
+        }
         setInviteEmail("");
         setInviteRole("MEMBER");
         setInviteSuccess(true);
