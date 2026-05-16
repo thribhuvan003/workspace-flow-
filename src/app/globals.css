@@ -54,7 +54,7 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* ─── Light mode — overrides theme vars + common hardcoded surfaces ──────── */
+/* ─── Light mode ─────────────────────────────────────────────────────────── */
 
 html.light {
   --color-background: #f5ede0;
@@ -71,98 +71,72 @@ html.light {
   --color-input: #d6c6a8;
 }
 
-/* Override the warm-dark + dashboard + auth backgrounds when in light mode.
-   These are used inline throughout the app, so we target by [style*=] +
-   class fallbacks. !important is needed because inline > class specificity. */
-html.light [style*="#0f0d0b"],
-html.light .bg-\[\#0f0d0b\] {
-  background-color: #f5ede0 !important;
-}
-html.light [style*="#0a0a0f"],
-html.light .bg-\[\#0a0a0f\] {
-  background-color: #ede2d0 !important;
-}
-html.light [style*="#060609"],
-html.light .bg-\[\#060609\] {
-  background-color: #ede2d0 !important;
-}
-html.light [style*="#1c1916"],
-html.light .bg-\[\#1c1916\] {
-  background-color: #faf3e5 !important;
-}
-html.light [style*="#16161f"],
-html.light .bg-\[\#16161f\] {
-  background-color: #faf3e5 !important;
-}
-html.light [style*="#1a1a26"],
-html.light .bg-\[\#1a1a26\] {
-  background-color: #e0d4be !important;
-}
-html.light [style*="#111119"] {
-  background-color: #ede2d0 !important;
-}
-html.light [style*="#111118"],
-html.light .bg-\[\#111118\] {
-  background-color: #f0e8d6 !important;
-}
-html.light [style*="#0d0d14"],
-html.light .bg-\[\#0d0d14\] {
-  background-color: #ede2d0 !important;
-}
-html.light [style*="#2a2a3e"],
-html.light .bg-\[\#2a2a3e\] {
-  background-color: #d6c6a8 !important;
-}
-html.light [style*="#1e1e2e"],
-html.light .bg-\[\#1e1e2e\] {
-  background-color: #e0d4be !important;
-}
+/* ── Backgrounds ── */
+html.light [style*="#060609"], html.light .bg-\[\#060609\]   { background-color: #ede2d0 !important; }
+html.light [style*="#0a0a0f"], html.light .bg-\[\#0a0a0f\]   { background-color: #ede2d0 !important; }
+html.light [style*="#0d0d14"], html.light .bg-\[\#0d0d14\]   { background-color: #e8dcc8 !important; }
+html.light [style*="#0f0d0b"], html.light .bg-\[\#0f0d0b\]   { background-color: #f5ede0 !important; }
+html.light [style*="#111118"], html.light .bg-\[\#111118\]   { background-color: #f0e8d6 !important; }
+html.light [style*="#111119"], html.light .bg-\[\#111119\]   { background-color: #f0e8d6 !important; }
+html.light [style*="#16161f"], html.light .bg-\[\#16161f\]   { background-color: #ede2d0 !important; }
+html.light [style*="#1a1a26"], html.light .bg-\[\#1a1a26\]   { background-color: #e0d4be !important; }
+html.light [style*="#1c1916"], html.light .bg-\[\#1c1916\]   { background-color: #faf3e5 !important; }
+html.light [style*="#1e1e2e"], html.light .bg-\[\#1e1e2e\]   { background-color: #e0d4be !important; }
+html.light [style*="#2a2a3e"], html.light .bg-\[\#2a2a3e\]   { background-color: #d6c6a8 !important; }
 
-/* Text/foreground swaps */
-html.light [style*="#f0f0f8"],
-html.light [style*="#f0f0f5"],
-html.light .text-\[\#f0f0f8\] {
-  color: #1a1208 !important;
-}
-html.light [style*="text-white"],
-html.light .text-white {
-  color: #1a1208;
-}
+/* ── Text — solid white → dark ink ── */
+html.light .text-white    { color: #1a1208 !important; }
+html.light .text-white\/10 { color: rgba(26,18,8,0.10) !important; }
+html.light .text-white\/20 { color: rgba(26,18,8,0.20) !important; }
+html.light .text-white\/25 { color: rgba(26,18,8,0.25) !important; }
+html.light .text-white\/30 { color: rgba(26,18,8,0.30) !important; }
+html.light .text-white\/40 { color: rgba(26,18,8,0.40) !important; }
+html.light .text-white\/50 { color: rgba(26,18,8,0.50) !important; }
+html.light .text-white\/60 { color: rgba(26,18,8,0.60) !important; }
+html.light .text-white\/70 { color: rgba(26,18,8,0.70) !important; }
+html.light .text-white\/80 { color: rgba(26,18,8,0.80) !important; }
+html.light .text-white\/90 { color: rgba(26,18,8,0.90) !important; }
 
-/* White-with-opacity surfaces and borders flip to dark-with-opacity */
-html.light [style*="rgba(255,255,255,0.0"],
-html.light [style*="rgba(255, 255, 255, 0.0"] {
-  background-color: rgba(26, 18, 8, 0.04) !important;
-}
-html.light [style*="rgba(255,255,255,0.05)"],
-html.light [style*="rgba(255,255,255,0.06)"] {
-  background-color: rgba(26, 18, 8, 0.05) !important;
-}
+/* ── Inline style text (rgba(240,240,248,x) → rgba(26,18,8,x)) ── */
+html.light [style*="#f0f0f8"], html.light [style*="#f0f0f5"] { color: #1a1208 !important; }
+html.light [style*="rgba(240,240,248,0.18)"] { color: rgba(26,18,8,0.22) !important; }
+html.light [style*="rgba(240,240,248,0.2)"]  { color: rgba(26,18,8,0.28) !important; }
+html.light [style*="rgba(240,240,248,0.25)"] { color: rgba(26,18,8,0.32) !important; }
+html.light [style*="rgba(240,240,248,0.3)"]  { color: rgba(26,18,8,0.38) !important; }
+html.light [style*="rgba(240,240,248,0.35)"] { color: rgba(26,18,8,0.44) !important; }
+html.light [style*="rgba(240,240,248,0.45)"] { color: rgba(26,18,8,0.54) !important; }
+html.light [style*="rgba(240,240,248,0.5)"]  { color: rgba(26,18,8,0.60) !important; }
+html.light [style*="rgba(240,240,248,0.55)"] { color: rgba(26,18,8,0.65) !important; }
 
-/* Soft text variants (rgba(240,240,248,x) → rgba(26,18,8,x)) */
-html.light [style*="rgba(240,240,248,0.45)"],
-html.light [style*="rgba(240,240,248,0.5)"],
-html.light [style*="rgba(240,240,248,0.55)"] {
-  color: rgba(26, 18, 8, 0.55) !important;
-}
-html.light [style*="rgba(240,240,248,0.3)"],
-html.light [style*="rgba(240,240,248,0.35)"],
-html.light [style*="rgba(240,240,248,0.25)"] {
-  color: rgba(26, 18, 8, 0.4) !important;
-}
-html.light [style*="rgba(240,240,248,0.2)"],
-html.light [style*="rgba(240,240,248,0.18)"] {
-  color: rgba(26, 18, 8, 0.28) !important;
-}
+/* ── White-with-opacity backgrounds → ink-with-opacity ── */
+html.light .bg-white\/\[0\.03\], html.light .bg-white\/\[0\.04\] { background-color: rgba(26,18,8,0.04) !important; }
+html.light .bg-white\/5  { background-color: rgba(26,18,8,0.05) !important; }
+html.light .bg-white\/10 { background-color: rgba(26,18,8,0.08) !important; }
 
-/* Border lines */
-html.light .border-\[\#1e1e2e\],
-html.light .border-\[\#2a2a3e\] {
-  border-color: #d6c6a8 !important;
-}
+/* ── Inline rgba white backgrounds ── */
+html.light [style*="rgba(255,255,255,0.02)"] { background-color: rgba(26,18,8,0.03) !important; }
+html.light [style*="rgba(255,255,255,0.03)"] { background-color: rgba(26,18,8,0.04) !important; }
+html.light [style*="rgba(255,255,255,0.04)"] { background-color: rgba(26,18,8,0.05) !important; }
+html.light [style*="rgba(255,255,255,0.05)"] { background-color: rgba(26,18,8,0.05) !important; }
+html.light [style*="rgba(255,255,255,0.06)"] { background-color: rgba(26,18,8,0.06) !important; }
+html.light [style*="rgba(255,255,255,0.07)"] { background-color: rgba(26,18,8,0.07) !important; }
 
-/* Scrollbar in light mode */
-html.light ::-webkit-scrollbar-thumb { background: #d6c6a8; }
+/* ── Borders ── */
+html.light .border-\[\#1e1e2e\], html.light .border-\[\#2a2a3e\] { border-color: #d6c6a8 !important; }
+html.light .border-white\/5  { border-color: rgba(26,18,8,0.08) !important; }
+html.light .border-white\/8  { border-color: rgba(26,18,8,0.10) !important; }
+html.light .border-white\/10 { border-color: rgba(26,18,8,0.12) !important; }
+html.light .border-white\/\[0\.06\] { border-color: rgba(26,18,8,0.08) !important; }
+
+/* ── Inline rgba white borders ── */
+html.light [style*="rgba(255,255,255,0.05)"] { border-color: rgba(26,18,8,0.08) !important; }
+html.light [style*="rgba(255,255,255,0.06)"] { border-color: rgba(26,18,8,0.09) !important; }
+html.light [style*="rgba(255,255,255,0.08)"] { border-color: rgba(26,18,8,0.10) !important; }
+html.light [style*="rgba(255,255,255,0.1)"]  { border-color: rgba(26,18,8,0.12) !important; }
+html.light [style*="rgba(255,255,255,0.13)"] { border-color: rgba(26,18,8,0.14) !important; }
+
+/* ── Scrollbar ── */
+html.light ::-webkit-scrollbar-thumb       { background: #d6c6a8; }
 html.light ::-webkit-scrollbar-thumb:hover { background: #b8a382; }
 
 /* ─── Custom scrollbar ────────────────────────────────────────────────────── */
