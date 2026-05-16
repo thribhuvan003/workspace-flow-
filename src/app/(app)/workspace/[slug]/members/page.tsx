@@ -111,11 +111,11 @@ export default function MembersPage() {
     if (!workspace?.id || member.role === "OWNER") return;
     try {
       const res = await fetch(
-        `/api/workspaces/${workspace.id}/members/${member.userId}`,
+        `/api/workspaces/${workspace.id}/members`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role }),
+          body: JSON.stringify({ userId: member.userId, role }),
         }
       );
       if (res.ok) {

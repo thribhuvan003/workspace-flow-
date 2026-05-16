@@ -14,9 +14,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const url = new URL(req.url);
   const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "30"), 100);
+  const taskId = url.searchParams.get("taskId");
 
   const activities = await prisma.activity.findMany({
-    where: { workspaceId: id },
+    where: { workspaceId: id, ...(taskId ? { taskId } : {}) },
     include: {
       user: { select: { id: true, name: true, email: true, image: true } },
       task: { select: { id: true, title: true } },
