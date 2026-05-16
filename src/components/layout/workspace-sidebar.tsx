@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
 import { Workspace } from "@/types";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface WorkspaceSidebarProps {
   workspace: Workspace & { role?: string };
@@ -215,11 +216,11 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
       </nav>
 
       {/* User footer */}
-      <div className="p-3 shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <div className="p-3 shrink-0 flex items-center gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <motion.button
-              className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl"
+              className="flex-1 min-w-0 flex items-center gap-2.5 px-2.5 py-2 rounded-xl"
               whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }}
             >
               <Avatar className="h-7 w-7 shrink-0">
@@ -249,6 +250,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ThemeToggle size="sm" />
       </div>
     </motion.aside>
   );

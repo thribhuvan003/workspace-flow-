@@ -42,6 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials, formatRelativeTime, WORKSPACE_COLORS } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { Workspace } from "@/types";
 
 // ─── Workspace Card ──────────────────────────────────────────────────────────
@@ -531,6 +532,7 @@ export default function DashboardPage() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <ThemeToggle size="sm" />
             <Button
               variant="outline"
               size="sm"
