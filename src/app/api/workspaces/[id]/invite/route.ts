@@ -66,8 +66,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     return NextResponse.json({
+      ...invite,
       message: emailSent ? "Invite sent" : "Invite created (email failed)",
-      inviteToken: invite.token,
       inviteUrl,
       emailSent,
     });
