@@ -158,16 +158,16 @@ function Navbar({ c, dark, onToggle }: { c: Theme; dark: boolean; onToggle: () =
 // ─── Kanban preview ────────────────────────────────────────────────────────────
 
 const BOARD_COLS = [
-  { id: "todo",   label: "To Do",       dot: "#5a5060",
+  { id: "todo",   label: "To Do",       dot: "#6b7280",
     cards: [{ t: "Auth flow redesign", tag: "Design" }, { t: "Rate limiting", tag: "Backend" }] },
   { id: "prog",   label: "In Progress", dot: "#ff5c00",
     cards: [{ t: "Kanban drag & drop", tag: "Feature" }, { t: "Socket.io rooms", tag: "Backend" }, { t: "Mobile layout", tag: "Frontend" }] },
   { id: "review", label: "Review",      dot: "#f59e0b",
     cards: [{ t: "Analytics v1", tag: "Feature" }, { t: "Invite emails", tag: "Backend" }] },
-  { id: "done",   label: "Done",        dot: "#22c55e",
+  { id: "done",   label: "Done",        dot: "#10b981",
     cards: [{ t: "NextAuth v5 setup", tag: "Security" }, { t: "Prisma schema", tag: "Backend" }] },
 ];
-const TAG_CLR: Record<string, string> = { Design: "#a78bfa", Backend: "#60a5fa", Frontend: "#f472b6", Feature: "#ff5c00", Security: "#22c55e" };
+const TAG_CLR: Record<string, string> = { Design: "#a78bfa", Backend: "#60a5fa", Frontend: "#f472b6", Feature: "#ff5c00", Security: "#10b981" };
 
 function KanbanPreview({ c }: { c: Theme }) {
   const ref = useRef(null);

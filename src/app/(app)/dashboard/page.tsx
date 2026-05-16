@@ -134,7 +134,7 @@ function WorkspaceCard({ workspace }: { workspace: Workspace & { role?: string }
             {workspace.members?.slice(0, 4).map((member) => (
               <Avatar key={member.id} className="h-6 w-6 border-2 border-[#111118]">
                 <AvatarImage src={member.user.image ?? ""} />
-                <AvatarFallback className="text-[10px] bg-[#cc3d00]/20 text-[#ff5c00]">
+                <AvatarFallback className="text-[10px] bg-[#ff5c00]/20 text-[#ff5c00]">
                   {getInitials(member.user.name ?? member.user.email)}
                 </AvatarFallback>
               </Avatar>
@@ -194,7 +194,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
         <div className="w-20 h-20 rounded-3xl bg-[#cc3d00]/10 border border-[#ff5c00]/20 flex items-center justify-center">
           <LayoutGrid className="w-9 h-9 text-[#ff5c00]" />
         </div>
-        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[#cc3d00] flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[#ff5c00] flex items-center justify-center">
           <Plus className="w-3.5 h-3.5 text-white" />
         </div>
       </div>
@@ -389,7 +389,7 @@ function CreateWorkspaceModal({ open, onOpenChange, onCreated }: CreateWorkspace
                   className={cn(
                     "w-9 h-9 rounded-lg border text-xs font-medium transition-all",
                     selectedEmoji === null
-                      ? "bg-[#cc3d00]/20 border-[#ff5c00]/40 text-[#ff5c00]"
+                      ? "bg-[#ff5c00]/20 border-[#ff5c00]/40 text-[#ff5c00]"
                       : "border-[#2a2a3e] text-white/30 hover:border-[#3a3a52] hover:text-white/50"
                   )}
                 >
@@ -403,7 +403,7 @@ function CreateWorkspaceModal({ open, onOpenChange, onCreated }: CreateWorkspace
                     className={cn(
                       "w-9 h-9 rounded-lg border text-lg transition-all",
                       selectedEmoji === emoji
-                        ? "bg-[#cc3d00]/20 border-[#ff5c00]/40 scale-110"
+                        ? "bg-[#ff5c00]/20 border-[#ff5c00]/40 scale-110"
                         : "border-[#2a2a3e] hover:border-[#3a3a52] hover:bg-[#1a1a26]"
                     )}
                   >
@@ -522,7 +522,7 @@ function DashboardContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#cc3d00] flex items-center justify-center shadow-lg shadow-[#ff5c00]/30">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#e05200] flex items-center justify-center shadow-lg shadow-[#ff5c00]/30">
               <LayoutGrid className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-white text-base tracking-tight">

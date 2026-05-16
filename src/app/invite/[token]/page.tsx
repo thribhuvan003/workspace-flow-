@@ -57,7 +57,7 @@ export default function InvitePage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#cc3d00] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff5c00] to-[#e05200] flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg font-bold text-white">WorkspaceFlow</span>

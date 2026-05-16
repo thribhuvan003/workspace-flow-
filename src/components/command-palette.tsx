@@ -252,12 +252,12 @@ export function CommandPalette({ workspaceSlug, workspaceName }: CommandPaletteP
                       onMouseEnter={() => setSelected(idx)}
                       className={cn(
                         "w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors",
-                        isSelected ? "bg-[#cc3d00]/15" : "hover:bg-white/[0.04]"
+                        isSelected ? "bg-[#ff5c00]/15" : "hover:bg-white/[0.04]"
                       )}
                     >
                       <div className={cn(
                         "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors",
-                        isSelected ? "bg-[#cc3d00]/20" : "bg-white/5"
+                        isSelected ? "bg-[#ff5c00]/20" : "bg-white/5"
                       )}>
                         <Icon className={cn("w-3.5 h-3.5", isSelected ? "text-[#ff5c00]" : "text-white/40")} />
                       </div>
