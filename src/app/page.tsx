@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 import { ArrowRight, LayoutGrid, Users, BarChart3, FileText, Zap, Plug, Sun, Moon } from "lucide-react";
 
 // ─── Spring presets ────────────────────────────────────────────────────────────
@@ -560,12 +561,19 @@ function Footer({ c }: { c: Theme }) {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
-  const [dark, setDark] = useState(true);
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const current = (resolvedTheme ?? theme ?? "dark") as "dark" | "light";
+  const dark = mounted ? current === "dark" : true;
   const c = dark ? DARK : LIGHT;
+
+  const toggle = () => setTheme(dark ? "light" : "dark");
 
   return (
     <main style={{ background: c.bg, minHeight: "100vh", transition: "background 0.3s ease" }}>
-      <Navbar c={c} dark={dark} onToggle={() => setDark((d) => !d)} />
+      <Navbar c={c} dark={dark} onToggle={toggle} />
       <Hero c={c} dark={dark} />
       <Features c={c} />
       <HowItWorks c={c} />
