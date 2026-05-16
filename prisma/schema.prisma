@@ -24,6 +24,7 @@ model User {
   assignedTasks   Task[]            @relation("TaskAssignee")
   comments        TaskComment[]
   activities      Activity[]
+  messages        Message[]
 }
 
 model Account {
@@ -82,6 +83,20 @@ model Workspace {
   integrations Integration[]
   automations  AutomationRule[]
   aiSummaries  AiSummary[]
+  messages     Message[]
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
 }
 
 enum MemberRole {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendInviteEmail } from "@/lib/email";
 import { z } from "zod";
 import { addDays } from "date-fns";
 
@@ -46,10 +47,29 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       create: { email, workspaceId: id, role, expiresAt: addDays(new Date(), 7) },
     });
 
+    const workspace = await prisma.workspace.findUnique({ where: { id }, select: { name: true } });
+    const inviter = await prisma.user.findUnique({ where: { id: session.user.id }, select: { name: true, email: true } });
+    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${invite.token}`;
+
+    let emailSent = false;
+    try {
+      await sendInviteEmail({
+        to: email,
+        inviterName: inviter?.name ?? inviter?.email ?? "A teammate",
+        workspaceName: workspace?.name ?? "a workspace",
+        inviteUrl,
+        role,
+      });
+      emailSent = true;
+    } catch (e) {
+      console.error("[invite] email send failed:", e);
+    }
+
     return NextResponse.json({
-      message: "Invite created",
+      message: emailSent ? "Invite sent" : "Invite created (email failed)",
       inviteToken: invite.token,
-      inviteUrl: `${process.env.NEXT_PUBLIC_APP_URL}/invite/${invite.token}`,
+      inviteUrl,
+      emailSent,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

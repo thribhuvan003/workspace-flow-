@@ -73,6 +73,20 @@ app.prepare().then(() => {
       socket.to(`workspace:${workspaceId}`).emit("doc-updated", { docId, content });
     });
 
+    // ── Chat ────────────────────────────────────────────────
+    socket.on("chat-message", ({ workspaceId, message }) => {
+      // server-saved message is broadcast to everyone in the room (incl. sender)
+      io.to(`workspace:${workspaceId}`).emit("chat-message", message);
+    });
+
+    socket.on("chat-typing-start", ({ workspaceId, userId, name }) => {
+      socket.to(`workspace:${workspaceId}`).emit("chat-typing-start", { userId, name });
+    });
+
+    socket.on("chat-typing-stop", ({ workspaceId, userId }) => {
+      socket.to(`workspace:${workspaceId}`).emit("chat-typing-stop", { userId });
+    });
+
     socket.on("disconnect", () => {
       if (currentWorkspaceId && workspaceUsers.has(currentWorkspaceId)) {
         workspaceUsers.get(currentWorkspaceId)!.delete(socket.id);

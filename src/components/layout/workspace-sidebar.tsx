@@ -6,7 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
   LayoutGrid, FileText, Users, BarChart3, Settings, LogOut,
-  ChevronDown, Plus, Home, Plug, Search,
+  ChevronDown, Plus, Home, Plug, Search, MessageSquare,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,6 +23,7 @@ interface WorkspaceSidebarProps {
 
 const navItems = [
   { href: "", label: "Board", icon: LayoutGrid },
+  { href: "/chat", label: "Chat", icon: MessageSquare },
   { href: "/docs", label: "Docs", icon: FileText },
   { href: "/members", label: "Members", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
