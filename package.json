@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx server.ts",
     "dev:next": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma db push --accept-data-loss --skip-generate && next build",
     "postinstall": "prisma generate",
     "start": "NODE_ENV=production tsx server.ts",
     "lint": "eslint",
