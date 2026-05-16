@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   title: {
@@ -160,11 +159,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute top-6 left-6 flex items-center gap-2 lg:hidden">
           <Logo />
           <span className="font-bold text-white text-sm" style={{ letterSpacing: "-0.02em" }}>WorkspaceFlow</span>
-        </div>
-
-        {/* Theme toggle — top right */}
-        <div className="absolute top-6 right-6 z-20">
-          <ThemeToggle />
         </div>
 
         <div className="relative z-10 w-full max-w-[400px]">{children}</div>
