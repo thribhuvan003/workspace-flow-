@@ -133,7 +133,7 @@ export function CommandPalette({ workspaceSlug, workspaceName }: CommandPaletteP
       icon: LogOut,
       action: () => {
         setOpen(false);
-        signOut({ callbackUrl: "/login" });
+        signOut({ callbackUrl: "/" });
       },
       group: "Account",
       keywords: ["logout", "leave", "exit"],

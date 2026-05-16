@@ -42,7 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials, formatRelativeTime, WORKSPACE_COLORS } from "@/lib/utils";
-import { useTheme } from "next-themes";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { Workspace } from "@/types";
 
 // ─── Workspace Card ──────────────────────────────────────────────────────────
@@ -480,10 +480,6 @@ function DashboardContent() {
   const [workspaces, setWorkspaces] = useState<(Workspace & { role?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
-  const { setTheme } = useTheme();
-
-  // Dashboard is dark-only — force dark if user came from landing page in light mode
-  useEffect(() => { setTheme("dark"); }, [setTheme]);
 
   // Auto-open create modal if ?new=1
   useEffect(() => {
@@ -536,6 +532,7 @@ function DashboardContent() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <ThemeToggle size="sm" />
             <Button
               variant="outline"
               size="sm"
@@ -578,7 +575,7 @@ function DashboardContent() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-red-400 focus:text-red-400 focus:bg-red-500/10"
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   <LogOut className="w-4 h-4 mr-2" /> Sign out
                 </DropdownMenuItem>

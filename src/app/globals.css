@@ -101,6 +101,22 @@ html.light .bg-\[\#1a1a26\] {
 html.light [style*="#111119"] {
   background-color: #ede2d0 !important;
 }
+html.light [style*="#111118"],
+html.light .bg-\[\#111118\] {
+  background-color: #f0e8d6 !important;
+}
+html.light [style*="#0d0d14"],
+html.light .bg-\[\#0d0d14\] {
+  background-color: #ede2d0 !important;
+}
+html.light [style*="#2a2a3e"],
+html.light .bg-\[\#2a2a3e\] {
+  background-color: #d6c6a8 !important;
+}
+html.light [style*="#1e1e2e"],
+html.light .bg-\[\#1e1e2e\] {
+  background-color: #e0d4be !important;
+}
 
 /* Text/foreground swaps */
 html.light [style*="#f0f0f8"],

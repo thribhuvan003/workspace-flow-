@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
 import { Workspace } from "@/types";
-import { useTheme } from "next-themes";
-import { useEffect } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface WorkspaceSidebarProps {
   workspace: Workspace & { role?: string };
@@ -50,10 +49,6 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
   const pathname = usePathname();
   const { data: session } = useSession();
   const base = `/workspace/${workspace.slug}`;
-  const { setTheme } = useTheme();
-
-  // App pages are dark-only — force dark if user accidentally switched via landing page toggle
-  useEffect(() => { setTheme("dark"); }, [setTheme]);
 
   return (
     <motion.aside
@@ -249,12 +244,13 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-red-400 focus:text-red-400 focus:bg-red-500/10 text-[13px]"
-              onClick={() => signOut({ callbackUrl: "/login" })}
+              onClick={() => signOut({ callbackUrl: "/" })}
             >
               <LogOut className="w-3.5 h-3.5 mr-2" /> Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ThemeToggle size="sm" />
       </div>
     </motion.aside>
   );
