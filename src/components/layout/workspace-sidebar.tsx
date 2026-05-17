@@ -52,8 +52,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
 
   return (
     <motion.aside
-      className="flex flex-col w-[220px] min-w-[220px] h-screen sticky top-0"
-      style={{ background: "#0f0d0b", borderRight: "1px solid rgba(255,255,255,0.06)" }}
+      className="flex flex-col w-[220px] min-w-[220px] h-screen sticky top-0 bg-[#0f0d0b] border-r border-white/[0.06]"
       initial={{ x: -24, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ ...SPRING, delay: 0.05 }}
@@ -61,8 +60,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
       {/* Brand */}
       <Link
         href="/dashboard"
-        className="flex items-center gap-2 px-4 h-12 shrink-0"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+        className="flex items-center gap-2 px-4 h-12 shrink-0 border-b border-white/5"
       >
         <Logo />
         <span className="font-bold text-white text-[13px]" style={{ letterSpacing: "-0.02em" }}>
@@ -74,11 +72,7 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
       <div className="px-3 pt-3 pb-1 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <motion.button
-              className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl"
-              style={{ background: "rgba(255,255,255,0.03)" }}
-              whileHover={{ backgroundColor: "rgba(255,255,255,0.06)" }}
-            >
+            <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
               <div
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold text-xs shrink-0"
                 style={{ background: workspace.color }}
@@ -87,12 +81,12 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[13px] font-semibold text-white truncate leading-tight">{workspace.name}</p>
-                <p className="text-[10px] capitalize" style={{ color: "rgba(240,240,248,0.35)" }}>
+                <p className="text-[10px] capitalize text-white/35">
                   {workspace.role?.toLowerCase() ?? "member"}
                 </p>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(240,240,248,0.3)" }} />
-            </motion.button>
+              <ChevronDown className="w-3.5 h-3.5 shrink-0 text-white/30" />
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-52" align="start">
             {allWorkspaces.map((ws) => (
@@ -125,30 +119,21 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
 
       {/* Search */}
       <div className="px-3 pt-1 pb-3 shrink-0">
-        <motion.button
+        <button
           onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }))}
-          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px]"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.05)",
-            color: "rgba(240,240,248,0.3)",
-          }}
-          whileHover={{ opacity: 0.9 }}
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] bg-white/[0.03] border border-white/5 text-white/30 hover:opacity-90 transition-opacity"
         >
           <Search className="w-3 h-3 shrink-0" />
           <span className="flex-1 text-left">Search...</span>
-          <kbd
-            className="text-[9px] font-mono px-1 py-0.5 rounded"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,240,248,0.22)" }}
-          >
+          <kbd className="text-[9px] font-mono px-1 py-0.5 rounded bg-white/5 border border-white/[0.08] text-white/25">
             ⌘K
           </kbd>
-        </motion.button>
+        </button>
       </div>
 
       {/* Nav label */}
       <div className="px-4 pb-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(240,240,248,0.2)", fontFamily: "var(--font-mono)" }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-white/20" style={{ fontFamily: "var(--font-mono)" }}>
           Workspace
         </p>
       </div>
@@ -170,10 +155,10 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
             >
               <Link
                 href={fullHref}
-                className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13px] font-medium relative transition-colors duration-100"
-                style={isActive ? { color: "#ff5c00" } : { color: "rgba(240,240,248,0.45)" }}
-                onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "#f0f0f8"; }}
-                onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.color = "rgba(240,240,248,0.45)"; }}
+                className={cn(
+                  "flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13px] font-medium relative transition-colors duration-100",
+                  isActive ? "text-[#ff5c00]" : "text-white/45 hover:text-white"
+                )}
               >
                 {isActive && (
                   <motion.span
@@ -184,13 +169,9 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
                   />
                 )}
                 {!isActive && (
-                  <motion.span
-                    className="absolute inset-0 rounded-xl opacity-0"
-                    style={{ background: "rgba(255,255,255,0.04)" }}
-                    whileHover={{ opacity: 1 }}
-                  />
+                  <span className="absolute inset-0 rounded-xl bg-white/[0.04] opacity-0 hover:opacity-100 transition-opacity" />
                 )}
-                <Icon className="w-3.5 h-3.5 shrink-0 relative z-10" style={{ color: isActive ? "#ff5c00" : undefined }} />
+                <Icon className={cn("w-3.5 h-3.5 shrink-0 relative z-10", isActive && "text-[#ff5c00]")} />
                 <span className="relative z-10">{label}</span>
               </Link>
             </motion.div>
@@ -198,17 +179,14 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
         })}
 
         <div className="pt-3 pb-1">
-          <p className="px-2.5 text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(240,240,248,0.18)", fontFamily: "var(--font-mono)" }}>
+          <p className="px-2.5 text-[10px] font-bold uppercase tracking-widest text-white/20" style={{ fontFamily: "var(--font-mono)" }}>
             Account
           </p>
         </div>
 
         <Link
           href="/dashboard"
-          className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13px] font-medium transition-colors"
-          style={{ color: "rgba(240,240,248,0.45)" }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#f0f0f8"; (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(240,240,248,0.45)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+          className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[13px] font-medium transition-colors text-white/45 hover:text-white hover:bg-white/[0.04]"
         >
           <Home className="w-3.5 h-3.5 shrink-0" />
           Dashboard
@@ -216,24 +194,21 @@ export function WorkspaceSidebar({ workspace, allWorkspaces = [] }: WorkspaceSid
       </nav>
 
       {/* User footer */}
-      <div className="p-3 shrink-0 flex items-center gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <div className="p-3 shrink-0 flex items-center gap-2 border-t border-white/5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <motion.button
-              className="flex-1 min-w-0 flex items-center gap-2.5 px-2.5 py-2 rounded-xl"
-              whileHover={{ backgroundColor: "rgba(255,255,255,0.04)" }}
-            >
+            <button className="flex-1 min-w-0 flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-white/[0.04] transition-colors">
               <Avatar className="h-7 w-7 shrink-0">
                 <AvatarImage src={session?.user?.image ?? ""} />
-                <AvatarFallback className="text-[10px] font-semibold" style={{ background: "rgba(255,92,0,0.15)", color: "#ff5c00" }}>
+                <AvatarFallback className="text-[10px] font-semibold bg-[#ff5c00]/15 text-[#ff5c00]">
                   {getInitials(session?.user?.name ?? session?.user?.email ?? "U")}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-[12px] font-semibold text-white truncate">{session?.user?.name ?? "User"}</p>
-                <p className="text-[10px] truncate" style={{ color: "rgba(240,240,248,0.35)" }}>{session?.user?.email}</p>
+                <p className="text-[10px] truncate text-white/35">{session?.user?.email}</p>
               </div>
-            </motion.button>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenuItem asChild>

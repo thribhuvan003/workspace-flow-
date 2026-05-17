@@ -84,6 +84,10 @@ html.light [style*="#1c1916"], html.light .bg-\[\#1c1916\]   { background-color:
 html.light [style*="#1e1e2e"], html.light .bg-\[\#1e1e2e\]   { background-color: #e0d4be !important; }
 html.light [style*="#2a2a3e"], html.light .bg-\[\#2a2a3e\]   { background-color: #d6c6a8 !important; }
 
+/* ── Backgrounds — extra dark color classes ── */
+html.light .bg-\[\#15151f\] { background-color: #f0e8d6 !important; }
+html.light .bg-\[\#060609\] { background-color: #ede2d0 !important; }
+
 /* ── Backgrounds — with Tailwind opacity modifier (e.g. bg-[#0a0a0f]/90) ── */
 html.light .bg-\[\#060609\]\/90 { background-color: rgba(237,226,208,0.90) !important; }
 html.light .bg-\[\#060609\]\/80 { background-color: rgba(237,226,208,0.80) !important; }
@@ -111,7 +115,9 @@ html.light .text-white\/10 { color: rgba(26,18,8,0.10) !important; }
 html.light .text-white\/20 { color: rgba(26,18,8,0.20) !important; }
 html.light .text-white\/25 { color: rgba(26,18,8,0.25) !important; }
 html.light .text-white\/30 { color: rgba(26,18,8,0.30) !important; }
+html.light .text-white\/35 { color: rgba(26,18,8,0.42) !important; }
 html.light .text-white\/40 { color: rgba(26,18,8,0.40) !important; }
+html.light .text-white\/45 { color: rgba(26,18,8,0.52) !important; }
 html.light .text-white\/50 { color: rgba(26,18,8,0.50) !important; }
 html.light .text-white\/60 { color: rgba(26,18,8,0.60) !important; }
 html.light .text-white\/70 { color: rgba(26,18,8,0.70) !important; }
@@ -132,9 +138,14 @@ html.light [style*="rgba(240,240,248,0.55)"] { color: rgba(26,18,8,0.65) !import
 /* ── White-with-opacity backgrounds → ink-with-opacity ── */
 html.light .bg-white\/\[0\.02\]                                { background-color: rgba(26,18,8,0.03) !important; }
 html.light .bg-white\/\[0\.03\], html.light .bg-white\/\[0\.04\] { background-color: rgba(26,18,8,0.04) !important; }
+html.light .bg-white\/\[0\.06\]  { background-color: rgba(26,18,8,0.06) !important; }
 html.light .bg-white\/5  { background-color: rgba(26,18,8,0.05) !important; }
 html.light .bg-white\/10 { background-color: rgba(26,18,8,0.08) !important; }
 html.light .bg-white\/30 { background-color: rgba(26,18,8,0.18) !important; }
+
+/* ── Hover-prefixed white backgrounds (Tailwind hover: variant) ── */
+html.light .hover\:bg-white\/\[0\.04\]:hover { background-color: rgba(26,18,8,0.05) !important; }
+html.light .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(26,18,8,0.07) !important; }
 
 /* ── Inline rgba white backgrounds ── */
 html.light [style*="rgba(255,255,255,0.02)"] { background-color: rgba(26,18,8,0.03) !important; }
@@ -146,6 +157,8 @@ html.light [style*="rgba(255,255,255,0.07)"] { background-color: rgba(26,18,8,0.
 
 /* ── Borders ── */
 html.light .border-\[\#1e1e2e\], html.light .border-\[\#2a2a3e\] { border-color: #d6c6a8 !important; }
+html.light .border-\[\#0a0a0f\] { border-color: #d6c6a8 !important; }
+html.light .border-\[\#0f0d0b\] { border-color: #e8dcc8 !important; }
 html.light .border-white\/5  { border-color: rgba(26,18,8,0.08) !important; }
 html.light .border-white\/8  { border-color: rgba(26,18,8,0.10) !important; }
 html.light .border-white\/10 { border-color: rgba(26,18,8,0.12) !important; }
@@ -153,6 +166,7 @@ html.light .border-white\/20 { border-color: rgba(26,18,8,0.16) !important; }
 html.light .border-white\/30 { border-color: rgba(26,18,8,0.22) !important; }
 html.light .border-white\/40 { border-color: rgba(26,18,8,0.28) !important; }
 html.light .border-white\/\[0\.06\] { border-color: rgba(26,18,8,0.08) !important; }
+html.light .border-white\/\[0\.08\] { border-color: rgba(26,18,8,0.10) !important; }
 
 /* ── Placeholder text ── */
 html.light .placeholder\:text-white\/20::placeholder { color: rgba(26,18,8,0.28) !important; }
