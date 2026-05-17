@@ -184,7 +184,7 @@ export default function MembersPage() {
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#cc3d00]/15 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#ff5c00]/15 flex items-center justify-center">
               <Users className="w-5 h-5 text-[#ff5c00]" />
             </div>
             <div>

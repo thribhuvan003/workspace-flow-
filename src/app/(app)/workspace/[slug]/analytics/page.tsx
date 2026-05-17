@@ -228,7 +228,7 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="px-8 pt-8 pb-6 border-b border-[#1e1e2e] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#cc3d00]/15 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#ff5c00]/15 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-[#ff5c00]" />
             </div>
             <div>
@@ -496,7 +496,7 @@ export default function AnalyticsPage() {
                 <div className="rounded-2xl border border-[#ff5c00]/20 bg-[#ff5c00]/[0.04] p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#cc3d00]/20 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-xl bg-[#ff5c00]/20 flex items-center justify-center">
                         <Brain className="w-5 h-5 text-[#ff5c00]" />
                       </div>
                       <div>
@@ -513,7 +513,7 @@ export default function AnalyticsPage() {
                             onClick={() => setAiType(t)}
                             className={`px-3 py-1.5 capitalize transition-colors ${
                               aiType === t
-                                ? "bg-[#cc3d00]/30 text-[#ff8a40]"
+                                ? "bg-[#ff5c00]/30 text-[#ff8a40]"
                                 : "text-white/30 hover:text-white/60 hover:bg-white/5"
                             }`}
                           >

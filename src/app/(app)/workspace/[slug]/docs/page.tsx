@@ -185,7 +185,7 @@ export default function DocsPage() {
                     className={cn(
                       "w-full text-left px-3 py-2.5 rounded-xl transition-all",
                       selectedDoc?.id === doc.id
-                        ? "bg-[#cc3d00]/15 border border-[#ff5c00]/20"
+                        ? "bg-[#ff5c00]/15 border border-[#ff5c00]/20"
                         : "hover:bg-[#1a1a26]"
                     )}
                   >

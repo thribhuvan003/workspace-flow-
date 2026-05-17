@@ -191,7 +191,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-[#cc3d00]/10 border border-[#ff5c00]/20 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-3xl bg-[#ff5c00]/10 border border-[#ff5c00]/20 flex items-center justify-center">
           <LayoutGrid className="w-9 h-9 text-[#ff5c00]" />
         </div>
         <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[#ff5c00] flex items-center justify-center">
