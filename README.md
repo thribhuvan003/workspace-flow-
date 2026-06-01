@@ -1,66 +1,136 @@
 # WorkspaceFlow
 
-> A modern, real-time project management tool built for teams who want everything in one place — tasks, docs, chat, and AI insights.
+WorkspaceFlow is a full-stack real-time workspace for teams. It combines task planning, markdown docs, team chat, member management, analytics, and AI summaries in one product.
 
-**[→ Live Demo](https://workspace-flow.vercel.app)**
+Live demo: https://workspace-flow.vercel.app
 
----
+## Why this project matters
 
-## What is it?
+This is not a single-page demo. WorkspaceFlow covers the core parts of a production SaaS app:
 
-WorkspaceFlow is a full-stack team workspace app. Think of it like a lighter version of Notion + Linear combined — you get a kanban board, collaborative docs, live team chat, analytics, and AI-powered summaries, all under one roof.
+- Authentication with email/password and OAuth providers
+- Multi-tenant workspaces with roles
+- Real-time collaboration with Socket.io
+- Drag-and-drop task management
+- Markdown documentation
+- Team chat and presence
+- Analytics dashboards
+- AI-assisted summaries and task descriptions
+- Database-backed APIs with Prisma and PostgreSQL
 
----
+For a fresher portfolio, it shows frontend, backend, database design, real-time systems, authentication, AI integration, and deployment awareness in one project.
 
-## What can you use it for?
+## Core features
 
-- Managing tasks and sprints with a drag-and-drop kanban board
-- Writing and sharing docs with your team in real time
-- Chatting with teammates without leaving your workspace
-- Getting AI-generated standups, project summaries, and backlog priorities
-- Tracking team progress with 30-day velocity charts
-- Inviting teammates and assigning roles (Owner, Member, Guest)
+### Workspaces
 
----
+Create separate workspaces for teams or projects. Each workspace has its own tasks, members, docs, chat, activity, analytics, and integrations.
 
-## Features at a glance
+### Kanban board
 
-| | |
-|---|---|
-| 🗂 **Kanban Board** | Drag and drop tasks across columns, live-synced for everyone |
-| 📝 **Docs** | Write markdown docs, preview them instantly |
-| 💬 **Team Chat** | Real-time messaging inside every workspace |
-| 🤖 **AI Summaries** | Generate standups, project overviews, and backlog plans with one click |
-| ✨ **Task AI** | Write a task title — AI fills in the full description |
-| 📊 **Analytics** | Visual charts for task completion, velocity, and priority breakdown |
-| 👥 **Members** | Invite by email, manage roles, see who's online |
-| 🔌 **Integrations** | Connect Slack, GitHub, and Discord |
-| ⌨️ **Command Palette** | Hit `Cmd+K` to jump anywhere instantly |
-| 🌗 **Light & Dark mode** | Fully themed, toggle anytime |
+Manage tasks across `To Do`, `In Progress`, `Review`, and `Done`. Tasks support priority, labels, due dates, assignees, comments, and drag-and-drop ordering.
 
----
+### Real-time collaboration
 
-## Tech Stack
+Socket.io powers live presence, chat messages, task movement, task updates, and comment activity. Users can see changes without refreshing the page.
 
-| Layer | Tech |
-|---|---|
-| Framework | Next.js 16 (App Router) |
+### Docs
+
+Write workspace documents in markdown, preview them, and keep project knowledge next to tasks and team discussions.
+
+### Chat
+
+Each workspace includes a team chat with saved message history, online presence, and typing indicators.
+
+### Members and roles
+
+Invite members by email and manage access with three roles:
+
+- `OWNER`: full workspace control
+- `MEMBER`: can collaborate and update work
+- `GUEST`: limited access
+
+### Analytics
+
+Track task totals, completion rate, recent activity, priority breakdown, and status distribution with Recharts.
+
+### AI features
+
+Google Gemini powers:
+
+- Workspace summaries
+- Standup summaries
+- Backlog prioritization
+- Task description generation
+
+AI features are optional and only require `GEMINI_API_KEY` when enabled.
+
+## Tech stack
+
+| Area | Technology |
+| --- | --- |
+| Framework | Next.js 16 App Router |
+| UI | React 19, Tailwind CSS v4, Framer Motion |
 | Language | TypeScript |
-| Database | PostgreSQL + Prisma |
-| Auth | NextAuth v5 — Google, GitHub, email/password |
+| Database | PostgreSQL |
+| ORM | Prisma 7 |
+| Auth | NextAuth v5 / Auth.js |
 | Real-time | Socket.io |
-| Styling | Tailwind CSS v4 + Framer Motion |
+| Forms | React Hook Form, Zod |
+| Charts | Recharts |
 | AI | Google Gemini |
 | Email | Resend |
-| Charts | Recharts |
+| Runtime | Custom Node server with `tsx` |
 
----
+## Architecture overview
 
-## Running it locally
+```text
+workspace-flow/
+├── prisma/
+│   └── schema.prisma          Database models and relations
+├── server.ts                  Custom Next.js + Socket.io server
+├── src/
+│   ├── app/
+│   │   ├── (auth)/            Login and register pages
+│   │   ├── (app)/             Authenticated app routes
+│   │   └── api/               REST API routes
+│   ├── components/            Reusable UI and product components
+│   ├── hooks/                 Client hooks for socket/workspace state
+│   ├── lib/                   Auth, Prisma, Gemini, email, utilities
+│   ├── store/                 Zustand state
+│   └── types/                 Shared TypeScript types
+├── MEMORY.md                  Project decisions and session notes
+└── ERRORS.md                  Repeated failure notes and fixes
+```
 
-**You'll need:** Node.js 20+ and a PostgreSQL database.
+## Data model
 
-### 1. Clone the repo
+The main database entities are:
+
+- `User`
+- `Workspace`
+- `WorkspaceMember`
+- `WorkspaceInvite`
+- `Task`
+- `TaskComment`
+- `Doc`
+- `Message`
+- `Activity`
+- `Integration`
+- `Subscription`
+- `AiSummary`
+
+Every workspace-owned resource is scoped by `workspaceId`, which keeps data separated between teams.
+
+## Getting started
+
+### Requirements
+
+- Node.js 20 or later
+- npm
+- PostgreSQL database
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/thribhuvan003/workspace-flow-.git
@@ -68,7 +138,9 @@ cd workspace-flow-
 npm install
 ```
 
-### 2. Create a `.env` file
+### 2. Create environment variables
+
+Create a `.env` file in the project root:
 
 ```env
 # Database
@@ -76,81 +148,120 @@ DATABASE_URL="postgresql://user:password@localhost:5432/workspaceflow"
 
 # Auth
 NEXTAUTH_URL="http://localhost:3000"
-AUTH_SECRET=""                      # run: openssl rand -base64 32
+AUTH_SECRET=""
 
-# OAuth (optional — skip if you only want email/password login)
+# Public app URL
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# OAuth providers, optional
 GOOGLE_CLIENT_ID=""
 GOOGLE_CLIENT_SECRET=""
 GITHUB_CLIENT_ID=""
 GITHUB_CLIENT_SECRET=""
 
-# AI (optional — needed for AI summaries and task descriptions)
+# AI, optional
 GEMINI_API_KEY=""
 
-# Email (optional — needed for invite emails)
+# Email invites, optional
 RESEND_API_KEY=""
-
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-### 3. Set up the database and start
+Generate `AUTH_SECRET` with:
 
 ```bash
-npm run db:push   # creates all tables
-npm run dev       # starts at http://localhost:3000
+openssl rand -base64 32
 ```
 
-That's it — open [localhost:3000](http://localhost:3000) and create your first workspace.
+On Windows without OpenSSL, use:
 
----
+```powershell
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
 
-## Deploying
-
-Deploy to **Railway**, **Render**, or **Fly.io** (any platform that supports persistent Node.js processes).
+### 3. Prepare the database
 
 ```bash
-npm run build
-npm start
+npm run db:push
 ```
 
-Set `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to your production domain, and run `npx prisma migrate deploy` on your first deploy.
+### 4. Start development
 
----
-
-## Project structure
-
-```
-workspace-flow/
-├── prisma/
-│   └── schema.prisma         # all database models
-├── src/
-│   ├── app/
-│   │   ├── (auth)/           # login & register pages
-│   │   ├── (app)/
-│   │   │   ├── dashboard/    # workspace switcher / home
-│   │   │   └── workspace/    # kanban, docs, chat, members, analytics
-│   │   └── api/              # all REST API routes
-│   ├── components/           # reusable UI components
-│   ├── hooks/                # custom React hooks
-│   ├── lib/                  # auth, db, email, AI helpers
-│   └── types/                # shared TypeScript types
+```bash
+npm run dev
 ```
 
----
+Open http://localhost:3000.
 
 ## Scripts
 
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the custom Next.js + Socket.io dev server |
+| `npm run dev:next` | Start plain Next.js dev server without Socket.io |
+| `npm run build` | Generate Prisma client and build the app |
+| `npm run start` | Start the production custom server |
+| `npm run lint` | Run ESLint |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:push` | Push Prisma schema to the database |
+| `npm run db:studio` | Open Prisma Studio |
+
+## Deployment notes
+
+WorkspaceFlow uses a custom Node server for Socket.io. For full real-time behavior, deploy it on a platform that supports long-running Node processes, such as Railway, Render, Fly.io, or a VPS.
+
+Build and start commands:
+
 ```bash
-npm run dev          # start dev server
-npm run build        # production build
-npm run start        # start production server
-npm run db:push      # sync schema to database
-npm run db:studio    # open Prisma Studio (visual DB editor)
-npm run lint         # run ESLint
+npm run build
+npm run start
 ```
 
----
+Production environment variables should include:
+
+```env
+DATABASE_URL=""
+AUTH_SECRET=""
+NEXTAUTH_URL="https://your-domain.com"
+NEXT_PUBLIC_APP_URL="https://your-domain.com"
+```
+
+Optional production variables:
+
+```env
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+GEMINI_API_KEY=""
+RESEND_API_KEY=""
+```
+
+## Quality checks
+
+Before pushing changes:
+
+```bash
+npm run lint
+npm run build
+```
+
+The current production foundation pass has been verified with both commands.
+
+## Portfolio highlights
+
+Good resume bullets for this project:
+
+- Built a full-stack real-time workspace app using Next.js, React, TypeScript, Prisma, PostgreSQL, NextAuth, Socket.io, and Tailwind CSS.
+- Implemented kanban task management, team chat, markdown docs, workspace roles, analytics dashboards, and AI-generated summaries.
+- Improved production readiness by fixing strict lint issues, aligning real-time event payloads, stabilizing auth configuration, and validating production builds.
+
+## Owner
+
+Built and maintained by:
+
+- GitHub: [thribhuvan003](https://github.com/thribhuvan003)
+- Email: `thribhuvan003@gmail.com`
 
 ## License
 
-MIT — free to use, modify, and deploy.
+MIT

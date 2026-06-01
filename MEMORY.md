@@ -27,3 +27,18 @@
 
 ### Rejected
 - Rejected hardcoding a development fallback secret because that can hide misconfigured environments.
+
+## 2026-06-01 - README and contributor ownership cleanup
+
+### Decided
+- Rewrite README in a clear, ASCII-only, portfolio-friendly format.
+- Keep the project positioned as one polished full-stack fresher portfolio project rather than starting a new project.
+- Rewrite git author/committer history to `thribhuvan003 <thribhuvan003@gmail.com>` so GitHub contributors show only the owner account.
+
+### Why
+- The existing README had mojibake characters and did not explain the architecture clearly enough for recruiters or reviewers.
+- GitHub contributors currently show both `thribhuvan003` and `nothing0-coder` because older commits used an email mapped to another account.
+- Normal commits cannot change GitHub contributor history; the raw commit authors must be corrected.
+
+### Rejected
+- Rejected only updating the current Git config because that would not fix historical contributor avatars.
