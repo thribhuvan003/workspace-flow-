@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Settings,
-  Loader2,
   Save,
   Trash2,
   AlertTriangle,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -45,8 +43,6 @@ export default function SettingsPage() {
   const { data: session } = useSession();
 
   const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
-  const [loadingWorkspace, setLoadingWorkspace] = useState(true);
-
   // Form state
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -77,8 +73,7 @@ export default function SettingsPage() {
           setSelectedColor(ws.color);
           setCustomColor(ws.color);
         }
-      })
-      .finally(() => setLoadingWorkspace(false));
+      });
   }, [slug]);
 
   const isOwner = workspace?.role === "OWNER" || workspace?.ownerId === session?.user?.id;

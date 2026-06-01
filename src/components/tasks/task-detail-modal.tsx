@@ -4,8 +4,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -82,10 +80,12 @@ export function TaskDetailModal({
 
   // Sync when task prop changes
   useEffect(() => {
-    setTask(initialTask);
-    setTitleValue(initialTask.title);
-    setDescValue(initialTask.description ?? "");
-    setComments(initialTask.comments ?? []);
+    queueMicrotask(() => {
+      setTask(initialTask);
+      setTitleValue(initialTask.title);
+      setDescValue(initialTask.description ?? "");
+      setComments(initialTask.comments ?? []);
+    });
   }, [initialTask]);
 
   // Socket listeners

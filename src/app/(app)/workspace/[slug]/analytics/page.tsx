@@ -164,7 +164,6 @@ export default function AnalyticsPage() {
   const { slug } = useParams<{ slug: string }>();
 
   const [workspaceId, setWorkspaceId] = useState<string>("");
-  const [loadingWorkspace, setLoadingWorkspace] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsData & { createdLast30?: number } | null>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -176,8 +175,7 @@ export default function AnalyticsPage() {
     if (!slug) return;
     fetch(`/api/workspaces/slug/${slug}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((ws) => { if (ws) setWorkspaceId(ws.id); })
-      .finally(() => setLoadingWorkspace(false));
+      .then((ws) => { if (ws) setWorkspaceId(ws.id); });
   }, [slug]);
 
   const loadAnalytics = useCallback(async () => {
@@ -200,7 +198,9 @@ export default function AnalyticsPage() {
   }, [workspaceId]);
 
   useEffect(() => {
-    loadAnalytics();
+    queueMicrotask(() => {
+      void loadAnalytics();
+    });
   }, [loadAnalytics]);
 
   async function generateAiSummary() {

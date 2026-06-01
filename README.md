@@ -76,7 +76,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/workspaceflow"
 
 # Auth
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET=""                  # run: openssl rand -base64 32
+AUTH_SECRET=""                      # run: openssl rand -base64 32
 
 # OAuth (optional — skip if you only want email/password login)
 GOOGLE_CLIENT_ID=""

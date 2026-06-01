@@ -63,6 +63,24 @@ function groupTasksByStatus(tasks: Task[]): Record<TaskStatus, Task[]> {
   return groups;
 }
 
+function getOrderForDrop(
+  tasks: Task[],
+  status: TaskStatus,
+  taskId: string,
+  destinationIndex: number
+): number {
+  const destinationTasks = tasks
+    .filter((task) => task.status === status && task.id !== taskId)
+    .sort((a, b) => a.order - b.order);
+  const before = destinationTasks[destinationIndex - 1]?.order;
+  const after = destinationTasks[destinationIndex]?.order;
+
+  if (before === undefined && after === undefined) return 1000;
+  if (before === undefined) return after - 1000;
+  if (after === undefined) return before + 1000;
+  return (before + after) / 2;
+}
+
 function isDueSoon(date: string | null): boolean {
   if (!date) return false;
   const diff = new Date(date).getTime() - Date.now();
@@ -478,6 +496,7 @@ export default function WorkspaceBoardPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
   const { data: session, status: authStatus } = useSession();
+  const userId = session?.user?.id;
 
   const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -525,8 +544,9 @@ export default function WorkspaceBoardPage() {
   // Fetch tasks
   useEffect(() => {
     if (!workspace?.id) return;
-    setLoadingTasks(true);
-    (async () => {
+    void (async () => {
+      await Promise.resolve();
+      setLoadingTasks(true);
       try {
         const res = await fetch(`/api/workspaces/${workspace.id}/tasks`);
         if (!res.ok) throw new Error();
@@ -547,17 +567,7 @@ export default function WorkspaceBoardPage() {
     if (!workspace?.id) return;
 
     const handlers = [
-      on("users-online", (users) => setOnlineUsers(users as SocketUser[])),
-      on("user-joined", (user) => {
-        const u = user as SocketUser;
-        setOnlineUsers((prev) =>
-          prev.find((p) => p.userId === u.userId) ? prev : [...prev, u]
-        );
-      }),
-      on("user-left", (data) => {
-        const { userId } = data as { userId: string };
-        setOnlineUsers((prev) => prev.filter((u) => u.userId !== userId));
-      }),
+      on("presence-update", (users) => setOnlineUsers(users as SocketUser[])),
       on("task-created", (task) => {
         const t = task as Task;
         setTasks((prev) => (prev.find((p) => p.id === t.id) ? prev : [...prev, t]));
@@ -601,17 +611,21 @@ export default function WorkspaceBoardPage() {
 
       const newStatus = destination.droppableId as TaskStatus;
       const prevStatus = source.droppableId as TaskStatus;
+      const newOrder = getOrderForDrop(tasks, newStatus, draggableId, destination.index);
+      const previousTask = tasks.find((task) => task.id === draggableId);
 
       // Optimistic update
       setTasks((prev) =>
-        prev.map((t) => (t.id === draggableId ? { ...t, status: newStatus } : t))
+        prev.map((t) =>
+          t.id === draggableId ? { ...t, status: newStatus, order: newOrder } : t
+        )
       );
 
       try {
         const res = await fetch(`/api/tasks/${draggableId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status: newStatus, order: newOrder }),
         });
         if (!res.ok) throw new Error();
         const updated: Task = await res.json();
@@ -622,19 +636,22 @@ export default function WorkspaceBoardPage() {
           workspaceId: workspace.id,
           taskId: draggableId,
           status: newStatus,
-          movedBy: session?.user?.id,
+          order: updated.order,
+          movedBy: userId,
         });
       } catch {
         // Revert on failure
         setTasks((prev) =>
           prev.map((t) =>
-            t.id === draggableId ? { ...t, status: prevStatus } : t
+            t.id === draggableId
+              ? { ...t, status: prevStatus, order: previousTask?.order ?? t.order }
+              : t
           )
         );
         toast.error("Failed to move task");
       }
     },
-    [workspace, emit, session?.user?.id]
+    [workspace, tasks, emit, userId]
   );
 
   const handleTaskClick = (task: Task) => {

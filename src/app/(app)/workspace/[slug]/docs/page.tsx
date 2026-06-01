@@ -23,7 +23,6 @@ export default function DocsPage() {
   const { slug } = useParams<{ slug: string }>();
 
   const [workspaceId, setWorkspaceId] = useState<string>("");
-  const [loadingWorkspace, setLoadingWorkspace] = useState(true);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
   const [loadingDocs, setLoadingDocs] = useState(false);
@@ -40,8 +39,7 @@ export default function DocsPage() {
     if (!slug) return;
     fetch(`/api/workspaces/slug/${slug}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((ws) => { if (ws) setWorkspaceId(ws.id); })
-      .finally(() => setLoadingWorkspace(false));
+      .then((ws) => { if (ws) setWorkspaceId(ws.id); });
   }, [slug]);
 
   // Load docs
@@ -66,7 +64,9 @@ export default function DocsPage() {
   }, [workspaceId, selectedDoc]);
 
   useEffect(() => {
-    loadDocs();
+    queueMicrotask(() => {
+      void loadDocs();
+    });
   }, [loadDocs]);
 
   const selectDoc = (doc: Doc) => {

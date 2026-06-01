@@ -16,11 +16,10 @@ interface InviteInfo {
 export default function InvitePage() {
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const [invite, setInvite] = useState<InviteInfo | null>(null);
   const [inviteStatus, setInviteStatus] = useState<"loading" | "valid" | "invalid" | "accepting" | "accepted" | "error">("loading");
-  const [slug, setSlug] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -43,7 +42,6 @@ export default function InvitePage() {
       const res = await fetch(`/api/invite/${token}/accept`, { method: "POST" });
       if (!res.ok) throw new Error("Failed to accept invite");
       const data = await res.json();
-      setSlug(data.slug);
       setInviteStatus("accepted");
       setTimeout(() => router.push(`/workspace/${data.slug}`), 2000);
     } catch (e: unknown) {

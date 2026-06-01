@@ -49,7 +49,7 @@ type Theme = typeof DARK;
 
 // ─── Shared utils ──────────────────────────────────────────────────────────────
 
-function AnimWords({ text, delay = 0, c }: { text: string; delay?: number; c: Theme }) {
+function AnimWords({ text, delay = 0 }: { text: string; delay?: number }) {
   return (
     <>
       {text.split(" ").map((w, i) => (
@@ -279,9 +279,9 @@ function Hero({ c, dark }: { c: Theme; dark: boolean }) {
         <h1 className="mb-8"
           style={{ fontSize: "clamp(50px, 7vw, 96px)", letterSpacing: "-0.048em", lineHeight: "1.01",
             fontFamily: "var(--font-display)", fontWeight: 800, color: c.ink }}>
-          <AnimWords text="Your team." delay={0.1} c={c} />
+          <AnimWords text="Your team." delay={0.1} />
           <br />
-          <AnimWords text="One workspace." delay={0.28} c={c} />
+          <AnimWords text="One workspace." delay={0.28} />
           <br />
           <motion.span style={{ color: c.accent, fontStyle: "italic", fontWeight: 700 }}
             initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ ...SP, delay: 0.6 }}>
@@ -563,7 +563,10 @@ function Footer({ c }: { c: Theme }) {
 export default function HomePage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   const current = (resolvedTheme ?? theme ?? "dark") as "dark" | "light";
   const dark = mounted ? current === "dark" : true;

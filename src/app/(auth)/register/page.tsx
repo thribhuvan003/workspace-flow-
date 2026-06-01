@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
@@ -117,16 +118,16 @@ function OAuthButton({
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [passwordValue, setPasswordValue] = useState("");
   const [oauthLoading, setOauthLoading] = useState<"google" | "github" | null>(null);
   const [showStrengthChecks, setShowStrengthChecks] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -135,7 +136,7 @@ export default function RegisterPage() {
   });
 
   // Keep password value in sync for the strength indicator
-  const watchedPassword = watch("password", "");
+  const watchedPassword = useWatch({ control, name: "password" }) ?? "";
   const strength = getPasswordStrength(watchedPassword);
 
   // ── Registration + auto sign-in ────────────────────────────────────────────
@@ -176,12 +177,12 @@ export default function RegisterPage() {
       if (result?.error) {
         // Rare: account was created but credentials sign-in failed
         toast.error("Account created! Please sign in manually.");
-        window.location.href = "/login";
+        router.push("/login");
         return;
       }
 
       if (result?.url) {
-        window.location.href = result.url;
+        router.push(result.url);
       }
     } catch {
       toast.error("An unexpected error occurred. Please try again.");

@@ -13,7 +13,6 @@ import {
   LogOut,
   Settings,
   ChevronDown,
-  Loader2,
   Sparkles,
   LayoutGrid,
   Home,
@@ -484,7 +483,7 @@ function DashboardContent() {
   // Auto-open create modal if ?new=1
   useEffect(() => {
     if (searchParams.get("new") === "1") {
-      setCreateOpen(true);
+      queueMicrotask(() => setCreateOpen(true));
     }
   }, [searchParams]);
 
@@ -504,7 +503,9 @@ function DashboardContent() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchWorkspaces();
+      queueMicrotask(() => {
+        void fetchWorkspaces();
+      });
     }
   }, [status, fetchWorkspaces]);
 

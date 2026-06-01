@@ -23,6 +23,8 @@ type OnlineUser = { userId: string; name: string | null; image: string | null };
 export default function ChatPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const userName = session?.user?.name;
   const [workspaceId, setWorkspaceId] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
@@ -46,11 +48,14 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (!workspaceId) return;
-    setLoading(true);
-    fetch(`/api/workspaces/${workspaceId}/messages?limit=80`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: Message[]) => setMessages(data))
-      .finally(() => setLoading(false));
+    void (async () => {
+      await Promise.resolve();
+      setLoading(true);
+      fetch(`/api/workspaces/${workspaceId}/messages?limit=80`)
+        .then((r) => (r.ok ? r.json() : []))
+        .then((data: Message[]) => setMessages(data))
+        .finally(() => setLoading(false));
+    })();
   }, [workspaceId]);
 
   useEffect(() => {
@@ -97,7 +102,7 @@ export default function ChatPage() {
         const msg: Message = await res.json();
         setMessages((prev) => (prev.some((x) => x.id === msg.id) ? prev : [...prev, msg]));
         emit("chat-message", { workspaceId, message: msg });
-        emit("chat-typing-stop", { workspaceId, userId: session?.user?.id });
+        emit("chat-typing-stop", { workspaceId, userId });
       } else {
         setDraft(content);
       }
@@ -106,21 +111,21 @@ export default function ChatPage() {
     } finally {
       setSending(false);
     }
-  }, [draft, sending, workspaceId, emit, session?.user?.id]);
+  }, [draft, sending, workspaceId, emit, userId]);
 
   const onInput = (val: string) => {
     setDraft(val);
-    if (!workspaceId || !session?.user?.id) return;
+    if (!workspaceId || !userId) return;
 
     const now = Date.now();
     if (now - lastTypingEmit.current > 1500) {
-      emit("chat-typing-start", { workspaceId, userId: session.user.id, name: session.user.name });
+      emit("chat-typing-start", { workspaceId, userId, name: userName });
       lastTypingEmit.current = now;
     }
 
     if (typingTimer.current) clearTimeout(typingTimer.current);
     typingTimer.current = setTimeout(() => {
-      emit("chat-typing-stop", { workspaceId, userId: session?.user?.id });
+      emit("chat-typing-stop", { workspaceId, userId });
       lastTypingEmit.current = 0;
     }, 2200);
   };

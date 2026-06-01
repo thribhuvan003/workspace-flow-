@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Task, Workspace, WorkspaceMember, Activity } from "@/types";
+import { Task, WorkspaceMember, Activity } from "@/types";
 
 export function useTasks(workspaceId: string) {
   const [tasks, setTasks] = useState<Task[]>([]);

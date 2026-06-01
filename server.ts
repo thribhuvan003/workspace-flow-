@@ -25,11 +25,9 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     let currentWorkspaceId: string | null = null;
-    let currentUserId: string | null = null;
 
     socket.on("join-workspace", ({ workspaceId, userId, name, image }) => {
       currentWorkspaceId = workspaceId;
-      currentUserId = userId;
       socket.join(`workspace:${workspaceId}`);
 
       if (!workspaceUsers.has(workspaceId)) {
@@ -50,11 +48,11 @@ app.prepare().then(() => {
     });
 
     socket.on("task-deleted", ({ workspaceId, taskId }) => {
-      socket.to(`workspace:${workspaceId}`).emit("task-deleted", taskId);
+      socket.to(`workspace:${workspaceId}`).emit("task-deleted", { taskId });
     });
 
-    socket.on("task-moved", ({ workspaceId, taskId, newStatus, newOrder }) => {
-      socket.to(`workspace:${workspaceId}`).emit("task-moved", { taskId, newStatus, newOrder });
+    socket.on("task-moved", ({ workspaceId, taskId, status, order }) => {
+      socket.to(`workspace:${workspaceId}`).emit("task-moved", { taskId, status, order });
     });
 
     socket.on("comment-added", ({ workspaceId, taskId, comment }) => {

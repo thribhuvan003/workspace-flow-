@@ -59,7 +59,6 @@ export default function MembersPage() {
   const { data: session } = useSession();
 
   const [workspace, setWorkspace] = useState<(Workspace & { role?: string }) | null>(null);
-  const [loadingWorkspace, setLoadingWorkspace] = useState(true);
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
@@ -82,8 +81,7 @@ export default function MembersPage() {
       .then((r) => (r.ok ? r.json() : null))
       .then((ws: (Workspace & { role?: string }) | null) => {
         if (ws) setWorkspace(ws);
-      })
-      .finally(() => setLoadingWorkspace(false));
+      });
   }, [slug]);
 
   const loadMembers = useCallback(async () => {
@@ -102,7 +100,9 @@ export default function MembersPage() {
   }, [workspace?.id]);
 
   useEffect(() => {
-    loadMembers();
+    queueMicrotask(() => {
+      void loadMembers();
+    });
   }, [loadMembers]);
 
   const isOwner = workspace?.role === "OWNER" || workspace?.ownerId === session?.user?.id;

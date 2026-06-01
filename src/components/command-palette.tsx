@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search, LayoutGrid, FileText, Users, BarChart3, Settings,
-  Plug, Home, Plus, LogOut, Zap, Moon, Sun, ArrowRight,
+  Plug, Home, Plus, LogOut, Zap, ArrowRight,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -160,7 +160,7 @@ export function CommandPalette({ workspaceSlug, workspaceName }: CommandPaletteP
   const flatFiltered = Object.values(grouped).flat();
 
   useEffect(() => {
-    setSelected(0);
+    queueMicrotask(() => setSelected(0));
   }, [query]);
 
   useEffect(() => {

@@ -16,7 +16,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const now = new Date();
   const thirtyDaysAgo = subDays(now, 30);
 
-  const [totalTasks, tasksByStatus, completedLast30, createdLast30, memberCount, recentActivities] =
+  const [totalTasks, tasksByStatus, completedLast30, createdLast30, memberCount] =
     await Promise.all([
       prisma.task.count({ where: { workspaceId: id } }),
       prisma.task.groupBy({
@@ -31,14 +31,6 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
         where: { workspaceId: id, createdAt: { gte: thirtyDaysAgo } },
       }),
       prisma.workspaceMember.count({ where: { workspaceId: id } }),
-      prisma.activity.findMany({
-        where: {
-          workspaceId: id,
-          action: "moved_task",
-          createdAt: { gte: thirtyDaysAgo },
-        },
-        orderBy: { createdAt: "asc" },
-      }),
     ]);
 
   // Build daily completed tasks chart data (last 14 days)

@@ -3,7 +3,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   title: {
-    default: "Sign in to WorkspaceFlow",
+    default: "Access WorkspaceFlow",
     template: "%s | WorkspaceFlow",
   },
 };

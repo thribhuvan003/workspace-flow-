@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
@@ -25,13 +25,11 @@ type LoginFormData = z.infer<typeof loginSchema>;
 // ─── OAuth button ─────────────────────────────────────────────────────────────
 
 function OAuthButton({
-  provider,
   icon,
   label,
   onClick,
   loading,
 }: {
-  provider: string;
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
@@ -69,6 +67,7 @@ function OAuthButton({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
@@ -90,7 +89,7 @@ function LoginForm() {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        callbackUrl: "/dashboard",
+        callbackUrl,
         redirect: false,
       });
 
@@ -106,7 +105,7 @@ function LoginForm() {
 
       if (result?.url) {
         toast.success("Welcome back!");
-        window.location.href = result.url;
+        router.push(result.url);
       }
     } catch {
       toast.error("An unexpected error occurred. Please try again.");
@@ -137,7 +136,6 @@ function LoginForm() {
       {/* OAuth buttons */}
       <div className="space-y-3 mb-6">
         <OAuthButton
-          provider="google"
           loading={oauthLoading === "google"}
           onClick={() => handleOAuth("google")}
           label="Continue with Google"
@@ -163,7 +161,6 @@ function LoginForm() {
           }
         />
         <OAuthButton
-          provider="github"
           loading={oauthLoading === "github"}
           onClick={() => handleOAuth("github")}
           label="Continue with GitHub"
